@@ -73,14 +73,14 @@ return 0;
 
 void drawInstructions()
 {
-    LCD.WriteAt("How to play Connecticut 4: ", 100, 60);
-LCD.WriteAt("Instructions: ", 100, 70);
-LCD.WriteAt("1. Each player should select their desired chip design when prompted after clicking 'play game'", 100, 80);
-LCD.WriteAt("2. The game will now begin. Player 1 will play first.", 100, 90);
-LCD.WriteAt("3. To play, the player should select the location on top of the row that they would like the chip to fall into.", 100, 100);
-LCD.WriteAt("4. It is now player 2's turn.", 100, 110);
-LCD.WriteAt("Objective:", 100, 120);
-LCD.WriteAt("The game will continue until four chips are connected in one straight path. The player who accomplishes this feat first is victorious.", 100, 130);
+    LCD.WriteAt("How to play Connecticut 4: ", 0, 30);
+LCD.WriteAt("Instructions: ", 0, 70);
+LCD.WriteAt("1. Each player should select their desired chip design when prompted after clicking 'play game'", 0, 110);
+LCD.WriteAt("2. The game will now begin. Player 1 will play first.", 0, 150);
+LCD.WriteAt("3. To play, the player should select the location on top of the row that they would like the chip to fall into.", 0, 190);
+LCD.WriteAt("4. It is now player 2's turn.", 0, 230);
+LCD.WriteAt("Objective:", 0, 270);
+LCD.WriteAt("The game will continue until four chips are connected in one straight path. The player who accomplishes this feat first is victorious.", 0, 310);
 
 }
 
@@ -146,7 +146,13 @@ while(true)
 
     while (menucheck == 3)
     {
-        //show stats
+        
+        LCD.WriteAt("Single Player: ", 0, 30);
+        LCD.WriteAt("Player 1 Wins: 2", 10, 50);
+        LCD.WriteAt("Player 2 Wins: 40 ", 10, 70);
+        LCD.WriteAt("Multiplayer: ", 0, 100);
+        LCD.WriteAt("Player 1 Wins: 1", 10, 120);
+        LCD.WriteAt("Player 2 Wins: 4", 10, 140);
         if (backButton() == 1)
         {
             LCD.Clear();
