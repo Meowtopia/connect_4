@@ -36,7 +36,7 @@ int menuCheck()
         //player 2
         else if (y_position > 85 && y_position < 120)
         {
-            LCD.WriteLine("player 2");
+            //LCD.WriteLine("player 2");
             return 2;
         }
 
@@ -49,7 +49,7 @@ int menuCheck()
         //records
         if (y_position > 120 && y_position < 155)
         {
-            LCD.WriteLine("recrds");
+            //LCD.WriteLine("recrds");
             return 3;
         }
 
@@ -63,7 +63,7 @@ int menuCheck()
         //credits
         else if (y_position > 190 && y_position < 230)
         {
-            LCD.WriteLine("credits");
+            //LCD.WriteLine("credits");
             return 5;
         }
         
@@ -81,11 +81,17 @@ LCD.WriteAt("3. To play, the player should select the location on top of the row
 LCD.WriteAt("4. It is now player 2's turn.", 0, 230);
 LCD.WriteAt("Objective:", 0, 270);
 LCD.WriteAt("The game will continue until four chips are connected in one straight path. The player who accomplishes this feat first is victorious.", 0, 310);
+}
 
+void drawCredits()
+{
+    LCD.WriteAt("Makers: Ross and Ayyoub", 60, 50);
 }
 
 int backButton ()
 {
+    LCD.WriteAt("Back", 5, 5);
+
     float x_position, y_position;
     float x_trash, y_trash;
 
