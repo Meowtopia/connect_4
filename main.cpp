@@ -101,7 +101,10 @@ LCD.WriteAt("in one path.", 0, 190);
 void drawCredits()
 {
     //we da real
-    LCD.WriteAt("Makers: Ross and Ayyoub", 60, 50);
+    LCD.WriteAt("Makers: Ross and Ayyoub", 0, 50);
+    LCD.WriteAt("Sources:",0,70);
+    LCD.WriteAt("https://u.osu.edu/fehproteus",0,90);
+    LCD.WriteAt("/programming-syntax/",0,110);
 }
 
 //draws back buttons and adds functionality.
@@ -226,6 +229,9 @@ while(true)
    LCD.Update();
 
 }
+
+
+
     //end main
     return 0;
 }
