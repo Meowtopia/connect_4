@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-
 //draws the menu
 void drawMenu ()
 {
@@ -26,7 +25,6 @@ void drawMenu ()
 /*returns 0 if no menu is selected, returns 1 if player 1 is selected
 2 if player 2 selected, 3 for records, 4 for instructions, 5 for credits 
 */
-
 int menuCheck()
 {
     //holds position of click/tap
@@ -64,21 +62,18 @@ int menuCheck()
             //LCD.WriteLine("recrds");
             return 3;
         }
-
         //instructions
         else if (y_position > 155 && y_position < 190)
         {
             //LCD.WriteLine("instructions");
             return 4;
         }
-
         //credits
         else if (y_position > 190 && y_position < 230)
         {
             //LCD.WriteLine("credits");
             return 5;
         }
-        
     }
 return 0;
 }//ending bracket
@@ -128,23 +123,15 @@ int backButton ()
     return 0;
 }
 
-
-//int main
-int main() {
-    // Infinite loop so the stoplights run until the program is closed
-    
-    //draw initial menu
-    drawMenu();
-
-    //check for menu
-    int menucheck = 0;
-
-//infinite loop to run program
-while(true)
+player::selectPieceTheme()
 {
-    //clear screen
-    LCD.ClearBuffer();
-
+    LCD.WriteAt("Select Theme", 90, 110);
+    LCD.WriteAt("Normal", 110, 140);
+    LCD.WriteAt("Pizza", 110, 160);
+    LCD.WriteAt("Cookies", 110, 180);
+}
+void menuTransition(/**player p*/) 
+{
     //while no menu element is selected
     while (menucheck == 0)
     {
@@ -156,7 +143,8 @@ while(true)
     //if player 1 selected
     while (menucheck == 1)
     {
-        LCD.WriteAt("Play game here", 95, 165);
+        LCD.WriteAt("Play game here", 10, 60);
+        
         //if back button selected
         if (backButton() == 1)
         {
@@ -164,7 +152,6 @@ while(true)
             //go back to main screen
             menucheck = 0;
         }
-        
     }
     //plyaer 2 selected
     while (menucheck == 2)
@@ -177,12 +164,10 @@ while(true)
             //go back to main screen
             menucheck = 0;
         }
-        
     }
     //records selected
     while (menucheck == 3)
     {
-        
         LCD.WriteAt("Single Player: ", 0, 30);
         LCD.WriteAt("Player 1 Wins: 2", 10, 50);
         LCD.WriteAt("Player 2 Wins: 40 ", 10, 70);
@@ -194,7 +179,6 @@ while(true)
             LCD.Clear();
             menucheck = 0;
         }
-        
     }
     //if instructions selected
     while (menucheck == 4)
@@ -208,11 +192,11 @@ while(true)
             //go back to main screen
             menucheck = 0;
         }
-        
     }
     //if credits selected
     while (menucheck == 5)
     {
+        drawCredits();
         //if back button selected
         if (backButton() == 1)
         {
@@ -220,8 +204,46 @@ while(true)
             //go back to main screen
             menucheck = 0;
         }
-        
     }
+}
+
+class player 
+{
+    public:
+        player(char nm[] = "Player", int wins = 0, int losses = 0, int ties = 0, char theme[] = "normal", int totalPiecesPlaced = 0);
+        void selectPieceTheme();
+        void dropPiece();
+        void updateStats();
+    private:
+        char nm[25];
+        //stats
+        int wins;
+        int losses;
+        int ties;
+        char theme[25];
+        int totalPiecesPlaced;
+};
+
+//int main
+int main() {
+    // Infinite loop so the stoplights run until the program is closed
+    
+    //draw initial menu
+    drawMenu();
+
+    //check for menu
+    int menucheck = 0;
+
+    player P1;
+    player P2;
+
+//infinite loop to run program
+while(true)
+{
+    //clear screen
+    LCD.ClearBuffer();
+
+    menuTransition();
     //update LCD
    LCD.Update();
 
