@@ -1,3 +1,4 @@
+/*
 #include "FEHLCD.h"
 #include "FEHUtility.h"
 
@@ -14,7 +15,9 @@
 */
 //fsergfrfsefr
 
+/*
 void DrawStoplight(int orientation, int activeLight) {
+    
     LCD.SetFontColor(LCD.White);
     LCD.WriteAt("N/S", 20, 112);
     LCD.WriteAt("E/W", 270, 112);
@@ -63,6 +66,7 @@ void DrawStoplight(int orientation, int activeLight) {
 }
 //ss
 /* Entry point to the application */
+/*
 int main() {
     // Infinite loop so the stoplights run until the program is closed
     while (1) {
@@ -74,3 +78,4 @@ int main() {
     }
     return 0;
 }
+*/
