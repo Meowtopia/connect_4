@@ -1,7 +1,7 @@
 #include "FEHLCD.h"
 #include "FEHUtility.h"
 
-#define N_S 0
+#define N_S 1
 #define E_W 1
 #define RED_LIGHT 0
 #define YELLOW_LIGHT 1
@@ -12,6 +12,8 @@
  * orientation = 0 if N/S, 1 if E/W
  * activeLight = 0 for red, 1 for yellow, 2 for green
 */
+//fsergfrfsefr
+
 void DrawStoplight(int orientation, int activeLight) {
     LCD.SetFontColor(LCD.White);
     LCD.WriteAt("N/S", 20, 112);
