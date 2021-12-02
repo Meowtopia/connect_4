@@ -1,81 +1,137 @@
-/*
 #include "FEHLCD.h"
 #include "FEHUtility.h"
+#include <iostream>
+#include <string>
+#include <vector>
 
-#define N_S 1
-#define E_W 1
-#define RED_LIGHT 9
-#define YELLOW_LIGHT 10
-#define GREEN_LIGHT 1234214321
 
-/*
- * Draws a stoplight to the screen
- * orientation = 0 if N/S, 1 if E/W
- * activeLight = 0 for red, 1 for yellow, 2 for green
-*/
-//fsergfrfsefr
 
-/*
-void DrawStoplight(int orientation, int activeLight) {
-    
+void drawMenu ()
+{
     LCD.SetFontColor(LCD.White);
-    LCD.WriteAt("N/S", 20, 112);
-    LCD.WriteAt("E/W", 270, 112);
-    if (orientation == N_S) {
-        // N/S
-        // Clear what was there before by drawing black over it
-        LCD.SetFontColor(LCD.Black);
-        LCD.FillRectangle(70, 10, 90, 220);
-        // Draw the outline of the stoplight
-        LCD.SetFontColor(LCD.White);
-        LCD.DrawRectangle(70, 10, 90, 220);
-        LCD.DrawCircle(115, 50, 35);
-        LCD.DrawCircle(115, 120, 35);
-        LCD.DrawCircle(115, 190, 35);
-
-        // Draw the light that is currently active
-        if (activeLight == RED_LIGHT) {
-            // FILL IN
-        } else if (activeLight == YELLOW_LIGHT) {
-            // FILL IN
-        } else if (activeLight == GREEN_LIGHT) {
-            // FILL IN
-        }
-    } else if (orientation == E_W) {
-        // E/W
-        // Clear what was there before by drawing black over it
-        LCD.SetFontColor(LCD.White);
-        LCD.FillRectangle(170, 10, 90, 220);
-        // Draw the outline of the stoplight
-        LCD.SetFontColor(LCD.White);
-        LCD.DrawRectangle(170, 10, 90, 220);
-        LCD.DrawCircle(215, 50, 35);
-        LCD.DrawCircle(215, 120, 35);
-        LCD.DrawCircle(215, 190, 35);
-
-        // Draw the light that is currently active
-        if (activeLight == RED_LIGHT) {
-            // FILL IN
-        } else if (activeLight == YELLOW_LIGHT) {
-            // FILL IN
-        } else if (activeLight == GREEN_LIGHT) {
-            // FILL IN
-        }
-    }
-    LCD.Update();
+    LCD.WriteAt("1P", 155, 60);
+    LCD.WriteAt("2P", 155, 95);
+    LCD.WriteAt("RECORDS", 130, 130);
+    LCD.WriteAt("INSTRUCTIONS", 95, 165);
+    LCD.WriteAt("CREDITS", 130, 200);
 }
-//ss
-/* Entry point to the application */
-/*
-int main() {
-    // Infinite loop so the stoplights run until the program is closed
-    while (1) {
-        DrawStoplight(N_S, GREEN_LIGHT);
-        DrawStoplight(E_W, RED_LIGHT);
+int menuCheck()
+{
 
-        // Add logic to make stoplights function
-		// FILL IN
+    float x_position, y_position;
+    float x_trash, y_trash;
+
+    while(!LCD.Touch(&x_position,&y_position)) {};
+    while(LCD.Touch(&x_trash,&y_trash)) {};
+    //player 1 and 2 detection x positions
+    if (x_position > 120 && x_position < 190 )
+    {
+        LCD.Clear(BLACK);
+        //player 1
+        if (y_position > 50 && y_position < 85)
+        {
+            //LCD.WriteLine("Play game here");
+            return 1;
+        }
+        //player 2
+        else if (y_position > 85 && y_position < 120)
+        {
+            LCD.WriteLine("player 2");
+            return 2;
+        }
+
+    }
+
+    //records, instructions, and credits detections
+    if (x_position > 85 && x_position < 240)
+    {
+        LCD.Clear(BLACK);
+        //records
+        if (y_position > 120 && y_position < 155)
+        {
+            LCD.WriteLine("recrds");
+            return 3;
+        }
+
+        //instructions
+        else if (y_position > 155 && y_position < 190)
+        {
+            LCD.WriteLine("instructions");
+            return 4;
+        }
+
+        //credits
+        else if (y_position > 190 && y_position < 230)
+        {
+            LCD.WriteLine("credits");
+            return 5;
+        }
+        
+    }
+return 0;
+}
+
+int backButton ()
+{
+    float x_position, y_position;
+    float x_trash, y_trash;
+
+    while(!LCD.Touch(&x_position,&y_position)) {};
+    while(LCD.Touch(&x_trash,&y_trash)) {};
+
+    //backbutton detection
+    if (x_position < 50 && y_position < 30)
+    {
+        return 1;
     }
     return 0;
+
 }
-*/
+
+
+
+int main() {
+    // Infinite loop so the stoplights run until the program is closed
+    
+    drawMenu();
+
+    //check for menu
+    int menucheck = 0;
+while(true)
+{
+    
+    LCD.ClearBuffer();
+
+    while (menucheck == 0)
+    {
+        
+        drawMenu();
+        menucheck = menuCheck();
+    }
+    //LCD.Clear();
+    while (menucheck == 1)
+    {
+        LCD.WriteAt("Play game here", 95, 165);
+        if (backButton() == 1)
+        {
+            LCD.Clear();
+            menucheck = 0;
+        }
+        
+    }
+
+    
+    
+
+   
+    //LCD.WriteLine("The screen was under pressure");
+    //LCD.Write("At x coordinate: ");
+    //LCD.WriteLine(x_position);
+    //LCD.Write("At y coordinate: ");
+    //LCD.WriteLine(y_position);
+
+   LCD.Update();
+
+}
+    return 0;
+}
