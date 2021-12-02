@@ -214,6 +214,7 @@ class player
         void dropPiece();
         void updateStats();
     private:
+        //name
         char Nm[25];
         //stats
         int Wins;
