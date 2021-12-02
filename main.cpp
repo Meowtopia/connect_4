@@ -98,8 +98,7 @@ void drawCredits()
     //we da real
     LCD.WriteAt("Makers: Ross and Ayyoub", 0, 50);
     LCD.WriteAt("Sources:",0,70);
-    LCD.WriteAt("https://u.osu.edu/fehproteus",0,90);
-    LCD.WriteAt("/programming-syntax/",0,110);
+    LCD.WriteAt("https://u.osu.edu/fehprote",0,90);
 }
 
 //draws back buttons and adds functionality.
