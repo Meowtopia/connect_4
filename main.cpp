@@ -126,15 +126,9 @@ int backButton ()
     return 0;
 }
 
-/*
-player::selectPieceTheme()
-{
-    LCD.WriteAt("Select Theme", 90, 110);
-    LCD.WriteAt("Normal", 110, 140);
-    LCD.WriteAt("Pizza", 110, 160);
-    LCD.WriteAt("Cookies", 110, 180);
-}
-*/
+
+
+
 void menuTransition(int menucheck) 
 {
     //while no menu element is selected
@@ -271,3 +265,13 @@ player::player (char nm[], int wins, int losses, int ties, char theme[], int tot
     strcpy(Theme, theme);
     TotalPiecesPlaced = totalPiecesPlaced;
 }
+
+/*
+player::selectPieceTheme()
+{
+    LCD.WriteAt("Select Theme", 90, 110);
+    LCD.WriteAt("Normal", 110, 140);
+    LCD.WriteAt("Pizza", 110, 160);
+    LCD.WriteAt("Cookies", 110, 180);
+}
+*/
