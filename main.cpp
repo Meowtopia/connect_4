@@ -4,8 +4,8 @@
 #define N_S 1
 #define E_W 1
 #define RED_LIGHT 9
-#define YELLOW_LIGHT 1
-#define GREEN_LIGHT 2
+#define YELLOW_LIGHT 10
+#define GREEN_LIGHT 1234214321
 
 /*
  * Draws a stoplight to the screen
