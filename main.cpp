@@ -220,14 +220,16 @@ class player
         void dropPiece();
         void updateStats();
     private:
-        char nm[25];
+        char Nm[25];
         //stats
-        int wins;
-        int losses;
-        int ties;
-        char theme[25];
-        int totalPiecesPlaced;
+        int Wins;
+        int Losses;
+        int Ties;
+        char Theme[25];
+        int TotalPiecesPlaced;
 };
+
+
 
 //int main
 int main() {
@@ -258,4 +260,14 @@ while(true)
 
     //end main
     return 0;
+}
+
+player::player (char nm[], int wins, int losses, int ties, char theme[], int totalPiecesPlaced)
+{
+    strcpy (Nm, nm);
+    Wins = wins;
+    Losses = losses;
+    Ties = ties;
+    strcpy(Theme, theme);
+    TotalPiecesPlaced = totalPiecesPlaced;
 }
