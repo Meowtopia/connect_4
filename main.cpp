@@ -99,6 +99,7 @@ void drawCredits()
     LCD.WriteAt("Makers: Ross and Ayyoub", 0, 50);
     LCD.WriteAt("Sources:",0,70);
     LCD.WriteAt("https://u.osu.edu/fehprote",0,90);
+    LCD.WriteAt("us/programming-syntax/",0,110);
 }
 
 //draws back buttons and adds functionality.
@@ -125,7 +126,6 @@ int backButton ()
     return 0;
 }
 
-/*
 player::selectPieceTheme()
 {
     LCD.WriteAt("Select Theme", 90, 110);
@@ -133,8 +133,7 @@ player::selectPieceTheme()
     LCD.WriteAt("Pizza", 110, 160);
     LCD.WriteAt("Cookies", 110, 180);
 }
-*/
-void menuTransition(int menucheck) 
+void menuTransition(/**player p*/) 
 {
     //while no menu element is selected
     while (menucheck == 0)
@@ -219,16 +218,14 @@ class player
         void dropPiece();
         void updateStats();
     private:
-        char Nm[25];
+        char nm[25];
         //stats
-        int Wins;
-        int Losses;
-        int Ties;
-        char Theme[25];
-        int TotalPiecesPlaced;
+        int wins;
+        int losses;
+        int ties;
+        char theme[25];
+        int totalPiecesPlaced;
 };
-
-
 
 //int main
 int main() {
@@ -249,7 +246,7 @@ while(true)
     //clear screen
     LCD.ClearBuffer();
 
-    menuTransition(menucheck);
+    menuTransition();
     //update LCD
    LCD.Update();
 
@@ -259,14 +256,4 @@ while(true)
 
     //end main
     return 0;
-}
-
-player::player (char nm[], int wins, int losses, int ties, char theme[], int totalPiecesPlaced)
-{
-    strcpy (Nm, nm);
-    Wins = wins;
-    Losses = losses;
-    Ties = ties;
-    strcpy(Theme, theme);
-    TotalPiecesPlaced = totalPiecesPlaced;
 }
