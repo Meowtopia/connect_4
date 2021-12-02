@@ -126,6 +126,7 @@ int backButton ()
     return 0;
 }
 
+/*
 player::selectPieceTheme()
 {
     LCD.WriteAt("Select Theme", 90, 110);
@@ -133,7 +134,8 @@ player::selectPieceTheme()
     LCD.WriteAt("Pizza", 110, 160);
     LCD.WriteAt("Cookies", 110, 180);
 }
-void menuTransition(/**player p*/) 
+*/
+void menuTransition(int menucheck) 
 {
     //while no menu element is selected
     while (menucheck == 0)
@@ -246,7 +248,7 @@ while(true)
     //clear screen
     LCD.ClearBuffer();
 
-    menuTransition();
+    menuTransition(menucheck);
     //update LCD
    LCD.Update();
 
