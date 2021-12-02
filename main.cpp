@@ -2,8 +2,8 @@
 #include "FEHUtility.h"
 
 #define N_S 1
-#define E_W 2
-#define RED_LIGHT 0
+#define E_W 1
+#define RED_LIGHT 9
 #define YELLOW_LIGHT 1
 #define GREEN_LIGHT 2
 
@@ -41,7 +41,7 @@ void DrawStoplight(int orientation, int activeLight) {
     } else if (orientation == E_W) {
         // E/W
         // Clear what was there before by drawing black over it
-        LCD.SetFontColor(LCD.Black);
+        LCD.SetFontColor(LCD.White);
         LCD.FillRectangle(170, 10, 90, 220);
         // Draw the outline of the stoplight
         LCD.SetFontColor(LCD.White);
