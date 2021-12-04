@@ -140,10 +140,11 @@ int backButton ()
 class player 
 {
     public:
-        player(char nm[] = "Player", int wins = 0, int losses = 0, int ties = 0, char theme[] = "normal", int totalPiecesPlaced = 0, bool play = false);
+        player(char nm[] = "Player", int wins = 0, int losses = 0, int ties = 0, char theme[] = "normal", int totalPiecesPlaced = 0, bool play = false, int PlayNumber = 0);
         void selectPieceTheme();
-        void dropPiece(player*);
+        void dropPiece(player*, int playerNumber);
         void updateStats();
+        void updateBoard(int column, int playerNumber);
         bool Play;
     private:
         //name
@@ -156,6 +157,7 @@ class player
         char Theme[25];
         int TotalPiecesPlaced;
         int board [6][7];
+        int playerNumber;
 };
 
 class AI 
@@ -168,15 +170,15 @@ class AI
         void setDifficulty();
     private:
         //stats
+        int playerNumber;
         int Wins;
         int Losses;
         int Ties;
         int Difficulty;
         int TotalPiecesPlaced;
-        
 };
 
-void drawBoard()
+void drawBoard(bool passThruHoles)
 {
     LCD.SetFontColor(BLUE);
     //7 columns by 6 rows, draws the board
@@ -184,6 +186,8 @@ void drawBoard()
     
     LCD.SetFontColor(WHITE);
 
+    if (!passThruHoles)
+    {
     //nested for loop to draw the holes inside the board at equal increments
     for (int i = 0; i < 7; i++)
     {
@@ -191,6 +195,7 @@ void drawBoard()
         {
             LCD.FillCircle(30 + (28*i), 63 + (29*j), 10);
         }
+    }
     }
 }
 
@@ -296,8 +301,8 @@ int main() {
 
     
 
-    player P1("Player 1", 0, 0, 0, " ", 0);
-    player P2("Player 2", 0, 0, 0, " ", 0);
+    player P1("Player 1", 0, 0, 0, " ", 0, 1);
+    player P2("Player 2", 0, 0, 0, " ", 0, 2);
     AI opponent;
 
 //infinite loop to run program
@@ -318,17 +323,17 @@ while(true)
     
     LCD.Clear();
 
-    drawBoard();
+    drawBoard(false);
 
     bool win = false;
 
     while (!win)
     {
-        (P1).dropPiece(&P1);
+        (P1).dropPiece(&P1, 1);
         
         if (P2.Play)
         {
-           (P2).dropPiece(&P1); 
+           (P2).dropPiece(&P1, 2); 
         }
         else
         {
@@ -341,7 +346,7 @@ while(true)
     return 0;
 }
 
-player::player (char nm[], int wins, int losses, int ties, char theme[], int totalPiecesPlaced, bool play)
+player::player (char nm[], int wins, int losses, int ties, char theme[], int totalPiecesPlaced, bool play, int PlayerNumbers)
 {
     strcpy (Nm, nm);
     Wins = wins;
@@ -350,6 +355,7 @@ player::player (char nm[], int wins, int losses, int ties, char theme[], int tot
     strcpy(Theme, theme);
     TotalPiecesPlaced = totalPiecesPlaced;
     Play = play;
+    PlayerNumbers = PlayerNumbers;
     
     for (int i = 0; i < 7; i++)
     {
@@ -457,19 +463,20 @@ void player::selectPieceTheme()
 
 }
 
-void player::dropPiece(player *P1)
+void player::dropPiece(player *P1, int playerNumber)
 {
     //hold position of touch
     float x_position, y_position;
     float x_trash, y_trash;
+    float x_init;
+    float y_init;
 
     while(!LCD.Touch(&x_position,&y_position)) {
         //LCD.SetFontColor(RED);
         //LCD.FillCircle(x_position, y_position, 5);
     };
     while(LCD.Touch(&x_trash,&y_trash)) {
-        float x_init;
-        float y_init;
+        
         if (x_init != x_trash || y_init != y_trash)
         {
             //LCD.Write("sus");
@@ -483,10 +490,125 @@ void player::dropPiece(player *P1)
 
         LCD.FillCircle(x_trash, y_trash, 10);
 //LCD.Write("1");
-        drawBoard();
+        drawBoard(false);
         Sleep(10);
     };
 
-    
+        drawBoard(true);
+        
+            if (x_position < 226)
+            {
+                while (y_init < 63)
+                {
+                 //drawBoard(false);
+                LCD.SetFontColor(BLACK);
+                LCD.FillCircle(x_init, y_init, 10);
+
+                LCD.SetFontColor(RED);
+                LCD.FillCircle(x_init, ++y_init, 10);
+            
+                drawBoard(false);
+                Sleep (10);
+                }
+
+                if (x_position < 44)
+                {
+                    (*P1).updateBoard(1, playerNumber);
+                }
+
+                else if (x_position < 72)
+                {
+                    (*P1).updateBoard(2, playerNumber);
+                }
+
+                else if (x_position < 100)
+                {
+                    (*P1).updateBoard(3, playerNumber);
+                }
+
+                else if (x_position < 128)
+                {
+                    (*P1).updateBoard(4, playerNumber);
+                }
+
+                else if (x_position < 156)
+                {
+                    (*P1).updateBoard(5, playerNumber);
+                }
+
+                else if (x_position < 184)
+                {
+                    (*P1).updateBoard(6, playerNumber);
+                }
+
+                else if (x_position < 212)
+                {
+                    (*P1).updateBoard(7, playerNumber);
+                }
+            }
+            else
+            { 
+            while (y_init < 220)
+            {
+                //drawBoard(false);
+                LCD.SetFontColor(BLACK);
+                LCD.FillCircle(x_init, y_init, 10);
+
+                LCD.SetFontColor(RED);
+                LCD.FillCircle(x_init, ++y_init, 10);
+            
+                drawBoard(false);
+                Sleep (10);
+            }
+            }
     LCD.Write("sus");
+
+}
+
+void player::updateBoard(int column, int playerNumber)
+{
+
+    
+    //nested for loop to draw the holes inside the board at equal increments
+    for (int i = 0; i < 7; i++)
+    {
+        for (int j = 0; j < 6; j++)
+        {
+            if (board [i][j] == 1)
+            {
+                LCD.SetFontColor(RED);
+                LCD.FillCircle(30 + (28*i), 63 + (29*j), 10);
+            }
+            if (board [i][j] == 2)
+            {
+                LCD.SetFontColor(YELLOW);
+                LCD.FillCircle(30 + (28*i), 63 + (29*j), 10);
+            }
+        }
+    }
+    
+
+    
+    LCD.Write("grefres");
+    int i = 0;
+    while (i < 5 && board[column-1][i+1] == 0)
+    {
+        LCD.SetFontColor(WHITE);
+        LCD.FillCircle(30 + (28*(column-1)), 63 + (29*i), 10);
+        if (playerNumber == 1)
+        {
+            LCD.SetFontColor(RED);
+        }
+
+        if (playerNumber == 2)
+        {
+            LCD.SetFontColor(YELLOW);
+        }
+        
+        LCD.FillCircle(30 + (28*(column-1)), 63 + (29*(i+1)), 10);
+        Sleep(500);
+        ++i;
+    }
+    board[column-1][i] = playerNumber;
+    LCD.Write(playerNumber);
 }
