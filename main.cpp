@@ -131,19 +131,22 @@ int backButton ()
 class player 
 {
     public:
-        player(char nm[] = "Player", int wins = 0, int losses = 0, int ties = 0, char theme[] = "normal", int totalPiecesPlaced = 0);
+        player(char nm[] = "Player", int wins = 0, int losses = 0, int ties = 0, char theme[] = "normal", int totalPiecesPlaced = 0, bool play = false);
         void selectPieceTheme();
-        void dropPiece();
+        void dropPiece(player*);
         void updateStats();
+        bool Play;
     private:
         //name
         char Nm[25];
         //stats
+        
         int Wins;
         int Losses;
         int Ties;
         char Theme[25];
         int TotalPiecesPlaced;
+        int board [6][7];
 };
 
 class AI 
@@ -161,14 +164,27 @@ class AI
         int Ties;
         int Difficulty;
         int TotalPiecesPlaced;
+        
 };
 
 void drawBoard()
 {
+    LCD.SetFontColor(BLUE);
+    //7 columns by 6 rows, draws the board
+    LCD.FillRectangle(10, 45, 210, 180);
     
-        LCD.Write("U got da big sussy");
-    
+    LCD.SetFontColor(WHITE);
+
+    //nested for loop to draw the holes inside the board at equal increments
+    for (int i = 0; i < 7; i++)
+    {
+        for (int j = 0; j < 6; j++)
+        {
+            LCD.FillCircle(30 + (28*i), 63 + (29*j), 10);
+        }
+    }
 }
+
 
 void menuTransition(int menucheck, player *p1, player *p2, AI *pc) 
 {
@@ -190,6 +206,9 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
         //LCD.WriteAt("Play game here", 10, 60);
         (*p1).selectPieceTheme();
         (*pc).setDifficulty();
+
+        (*p1).Play = true;
+        (*p2).Play = false;
         menucheck = 11111;
         exit = 1;
         //if back button selected
@@ -200,7 +219,9 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
         //LCD.WriteAt("Play game here", 95, 165);
         (*p1).selectPieceTheme();
         (*p2).selectPieceTheme();
-        (*pc).setDifficulty();
+        (*p1).Play = true;
+        (*p2).Play = true;
+        
         menucheck = 11111;
         exit = 1;
         //if back button selected
@@ -251,15 +272,19 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
     }
 }
 
+
+
 //int main
 int main() {
     // Infinite loop so the stoplights run until the program is closed
     
     //draw initial menu
-    drawMenu();
+   // drawMenu();
 
     //check for menu
     int menucheck = 0;
+
+    
 
     player P1("Player 1", 0, 0, 0, " ", 0);
     player P2("Player 2", 0, 0, 0, " ", 0);
@@ -281,12 +306,28 @@ while(true)
 
     drawBoard();
 
+    bool win = false;
+
+    while (!win)
+    {
+        (P1).dropPiece(&P1);
+        
+        if (P2.Play)
+        {
+           (P2).dropPiece(&P1); 
+        }
+        else
+        {
+            //(AI).dropPiece(&P1);
+        }
+        
+    }
 }
     //end main
     return 0;
 }
 
-player::player (char nm[], int wins, int losses, int ties, char theme[], int totalPiecesPlaced)
+player::player (char nm[], int wins, int losses, int ties, char theme[], int totalPiecesPlaced, bool play)
 {
     strcpy (Nm, nm);
     Wins = wins;
@@ -294,6 +335,16 @@ player::player (char nm[], int wins, int losses, int ties, char theme[], int tot
     Ties = ties;
     strcpy(Theme, theme);
     TotalPiecesPlaced = totalPiecesPlaced;
+    Play = play;
+    
+    for (int i = 0; i < 7; i++)
+    {
+        for (int j = 0; j < 6; j++)
+        {
+            board [i][j] = 0;
+        }
+    }
+  
 }
 
 AI::AI (int difficulty, int wins, int losses, int ties, int totalPiecesPlaced)
@@ -349,6 +400,7 @@ void AI::setDifficulty()
     }
 }
 
+
 void player::selectPieceTheme()
 {
     int exit = 0;
@@ -391,4 +443,37 @@ void player::selectPieceTheme()
 
 }
 
+void player::dropPiece(player *P1)
+{
+    //hold position of touch
+    float x_position, y_position;
+    float x_trash, y_trash;
 
+    while(!LCD.Touch(&x_position,&y_position)) {
+        //LCD.SetFontColor(RED);
+        //LCD.FillCircle(x_position, y_position, 5);
+    };
+    while(LCD.Touch(&x_trash,&y_trash)) {
+        float x_init;
+        float y_init;
+        if (x_init != x_trash)
+        {
+            //LCD.Write("sus");
+            LCD.SetFontColor(BLACK);
+            LCD.FillCircle(x_init, y_init, 40);
+        }
+        LCD.SetFontColor(RED);
+
+        x_init = x_trash;
+        y_init = y_trash;
+
+        LCD.FillCircle(x_trash, y_trash, 7);
+//LCD.Write("1");
+        drawBoard();
+        Sleep(35);
+    };
+
+
+
+    //LCD.Write("sus");
+}
