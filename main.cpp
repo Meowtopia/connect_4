@@ -456,24 +456,23 @@ void player::dropPiece(player *P1)
     while(LCD.Touch(&x_trash,&y_trash)) {
         float x_init;
         float y_init;
-        if (x_init != x_trash)
+        if (x_init != x_trash || y_init != y_trash)
         {
             //LCD.Write("sus");
             LCD.SetFontColor(BLACK);
-            LCD.FillCircle(x_init, y_init, 40);
+            LCD.FillCircle(x_init, y_init, 120);
         }
         LCD.SetFontColor(RED);
 
         x_init = x_trash;
         y_init = y_trash;
 
-        LCD.FillCircle(x_trash, y_trash, 7);
+        LCD.FillCircle(x_trash, y_trash, 10);
 //LCD.Write("1");
         drawBoard();
-        Sleep(35);
+        Sleep(10);
     };
 
-
-
-    //LCD.Write("sus");
+    
+    LCD.Write("sus");
 }
