@@ -1,9 +1,11 @@
 //headers
 #include "FEHLCD.h"
 #include "FEHUtility.h"
+#include "FEHImages.h"
 #include <iostream>
 #include <string>
 #include <vector>
+#include "fstream"
 
 using namespace std;
 
