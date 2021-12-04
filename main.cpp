@@ -12,8 +12,12 @@ using namespace std;
 //draws the menu
 void drawMenu ()
 {
+   FEHIMAGE pic1; //draw pic pic
+	pic1.Open("connect4pageFEH.pic");
+	pic1.Draw(0,0);//draw pic
+   
     //set font color
-    LCD.SetFontColor(LCD.White);
+    LCD.SetFontColor(LCD.Black);
     //player 1
     LCD.WriteAt("1P", 155, 60);
     //player 2
@@ -24,6 +28,9 @@ void drawMenu ()
     LCD.WriteAt("INSTRUCTIONS", 95, 165);
     //credits
     LCD.WriteAt("CREDITS", 130, 200);
+
+    LCD.SetFontColor(LCD.White);
+
 }
 //adds interactibility to menu
 /*returns 0 if no menu is selected, returns 1 if player 1 is selected
@@ -281,9 +288,10 @@ int main() {
     // Infinite loop so the stoplights run until the program is closed
     
     //draw initial menu
-   // drawMenu();
+   drawMenu();
 
     //check for menu
+
     int menucheck = 0;
 
     
@@ -295,10 +303,14 @@ int main() {
 //infinite loop to run program
 while(true)
 {
+    // Clear background
+
+
     //clear screen
     LCD.ClearBuffer();
 
     menuTransition(menucheck, &P1, &P2, &opponent);
+
 
     LCD.Write("sussy");
     //update LCD

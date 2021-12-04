@@ -11,7 +11,7 @@ LIB_DIR = Libraries
 
 INC_DIRS = -I$(LIB_DIR) -I.
 
-OBJS = $(LIB_DIR)/FEHLCD.o $(LIB_DIR)/FEHRandom.o $(LIB_DIR)/FEHSD.o $(LIB_DIR)/FEHUtility.o $(LIB_DIR)/tigr.o $(LIB_DIR)/FEHImages.o 
+OBJS = $(LIB_DIR)/FEHLCD.o $(LIB_DIR)/FEHRandom.o $(LIB_DIR)/FEHSD.o $(LIB_DIR)/tigr.o $(LIB_DIR)/FEHImages.o 
 
 ifeq ($(OS),Windows_NT)
 	LDFLAGS = -lopengl32 -lgdi32
