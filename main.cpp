@@ -146,6 +146,7 @@ class player
         void updateStats();
         void updateBoard(int column, int playerNumber);
         bool Play;
+        int board [20][20];
     private:
         //name
         char Nm[25];
@@ -156,16 +157,16 @@ class player
         int Ties;
         char Theme[25];
         int TotalPiecesPlaced;
-        int board [6][7];
+        
         int playerNumber;
 };
 
 class AI 
 {
     public:
-        AI(int difficulty = 1, int wins = 0, int losses = 0, int ties = 0, int totalPiecesPlaced = 0);
+        AI(int difficulty = 1, int wins = 0, int losses = 0, int ties = 0, int totalPiecesPlaced = 0, int turnCount = 1);
         
-        void AIDropPiece();
+        void AIDropPiece(player*);
         void updateStats();
         void setDifficulty();
     private:
@@ -176,6 +177,7 @@ class AI
         int Ties;
         int Difficulty;
         int TotalPiecesPlaced;
+        int turnCount;
 };
 
 void drawBoard(bool passThruHoles)
@@ -189,11 +191,11 @@ void drawBoard(bool passThruHoles)
     if (!passThruHoles)
     {
     //nested for loop to draw the holes inside the board at equal increments
-    for (int i = 0; i < 7; i++)
+    for (int i = 6; i < 13; i++)
     {
-        for (int j = 0; j < 6; j++)
+        for (int j = 6; j < 12; j++)
         {
-            LCD.FillCircle(30 + (28*i), 63 + (29*j), 10);
+            LCD.FillCircle(30 + (28*(i-6)), 63 + (29*(j-6)), 10);
         }
     }
     }
@@ -287,11 +289,148 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
 }
 
 
-
+int checkWin(player *P1, player *P2, int playerNumber)
+{
+    /*
+    |   ->
+    8
+       6   7  8  9  10 11 12
+   6   {0, 0, 0, 0, 0, 0, 0}
+   7   {0, 0, 0, 1, 0, 0, 0}
+   8   {0, 0, 2, 1, 0, 0, 0}
+   9   {0, 0, 1, 2, 1, 0, 0}
+   10   {0, 0, 1, 2, 2, 0, 0}
+   11   {0, 1, 1, 2, 1, 2, 0}
+   ...
+    (2, 3), (3, 4), (4, 5), (5, 6)
+    */
+    //int winCheck = 1;
+    for (int i = 6; i < 13; i++)
+    {
+        for (int j = 6; j < 12; j++)
+        {
+           // LCD.Write((*P1).board[i][j]);
+            //LCD.ClearBuffer();
+            if ((*P1).board[i][j] == playerNumber)
+            {   
+                        //top left
+                        if ((*P1).board[i-1][j-1] == playerNumber)
+                        {
+                            if ((*P1).board[i-2][j-2] == playerNumber)
+                            {
+                                if ((*P1).board[i-3][j-3] == playerNumber)
+                                {
+                                    LCD.Write("WIN");
+                                    return playerNumber;
+                                    //Sleep(5000);
+                                } 
+                            } 
+                        } 
+                        //left
+                        
+                        else if ((*P1).board[i-1][j] == playerNumber)
+                        {
+                            
+                            if ((*P1).board[i-2][j] == playerNumber)
+                            {
+                                if ((*P1).board[i-3][j] == playerNumber)
+                                {
+                                    LCD.Write("WIN");
+                                    return playerNumber;
+                                    //Sleep(5000);
+                                } 
+                            } 
+                        } 
+                        
+                        //bottom left
+                        else if ((*P1).board[i-1][j+1] == playerNumber)
+                        {
+                            if ((*P1).board[i-2][j+2] == playerNumber)
+                            {
+                                if ((*P1).board[i-3][j+3] == playerNumber)
+                                {
+                                    LCD.Write("WIN");
+                                    return playerNumber;
+                                    //Sleep(5000);
+                                } 
+                            } 
+                        } 
+                        //bottom 
+                        else if ((*P1).board[i][j+1] == playerNumber)
+                        {
+                            if ((*P1).board[i][j+2] == playerNumber)
+                            {
+                                if ((*P1).board[i][j+3] == playerNumber)
+                                {
+                                    LCD.Write("WIN");
+                                    return playerNumber;
+                                    //Sleep(5000);
+                                } 
+                            } 
+                        } 
+                        //bottom right diagonal
+                        else if ((*P1).board[i+1][j+1] == playerNumber)
+                        {
+                            if ((*P1).board[i+2][j+2] == playerNumber)
+                            {
+                                if ((*P1).board[i+3][j+3] == playerNumber)
+                                {
+                                    LCD.Write("WIN");
+                                    return playerNumber;
+                                    //Sleep(5000);
+                                } 
+                            } 
+                        } 
+                        //right
+                        else if ((*P1).board[i+1][j] == playerNumber)
+                        {
+                            if ((*P1).board[i+2][j] == playerNumber)
+                            {
+                                if ((*P1).board[i+3][j] == playerNumber)
+                                {
+                                    LCD.Write("WIN");
+                                    return playerNumber;
+                                   // Sleep(5000);
+                                } 
+                            } 
+                        } 
+                        //top right
+                        else if ((*P1).board[i+1][j-1] == playerNumber)
+                        {
+                            if ((*P1).board[i+2][j-2] == playerNumber)
+                            {
+                                if ((*P1).board[i+3][j-3] == playerNumber)
+                                {
+                                    LCD.Write("WIN");
+                                    return playerNumber;
+                                    //Sleep(5000);
+                                } 
+                            } 
+                        } 
+                        //top[]
+                        else if ((*P1).board[i][j-1] == playerNumber)
+                        {
+                            if ((*P1).board[i][j-2] == playerNumber)
+                            {
+                                if ((*P1).board[i][j-3] == playerNumber)
+                                {
+                                    LCD.Write("WIN");
+                                    return playerNumber;
+                                    //Sleep(5000);
+                                } 
+                            } 
+                        } 
+            }
+        }
+    }
+    return 0;
+}
 //int main
 int main() {
     // Infinite loop so the stoplights run until the program is closed
-    
+    //infinite loop to run program
+    while(true)
+    {
     //draw initial menu
    drawMenu();
 
@@ -305,9 +444,7 @@ int main() {
     player P2("Player 2", 0, 0, 0, " ", 0, 2);
     AI opponent;
 
-//infinite loop to run program
-while(true)
-{
+
     // Clear background
 
 
@@ -326,24 +463,115 @@ while(true)
     drawBoard(false);
 
     bool win = false;
+    int winner = 0;
+    
 
-    while (!win)
+    while (winner == 0)
     {
-        (P1).dropPiece(&P1, 1);
-        
-        if (P2.Play)
+        if (winner == 0)
+        {
+            (P1).dropPiece(&P1, 1);
+            winner = checkWin(&P1, &P2, 1);
+        }
+        if (P2.Play && winner == 0)
         {
            (P2).dropPiece(&P1, 2); 
+           winner = checkWin(&P1, &P2, 2);
+           //LCD.Write ("bakka");
         }
-        else
+        
+        else if (winner == 0)
         {
-            //(AI).dropPiece(&P1);
+            (opponent).AIDropPiece(&P1);
+            winner = checkWin(&P1, &P2, 2);
         }
         
     }
+    LCD.Write("Game overe");
+    LCD.Write(winner);
+    LCD.Write(" wins!!");
+    Sleep(5000000);
 }
     //end main
     return 0;
+}
+
+void AI::AIDropPiece(player *P1)
+{
+    LCD.Write(Difficulty);
+    /*
+    |   ->
+    8
+       6   7  8  9  10 11 12
+       1   2  3  4  5  6  7
+   6   {0, 0, 0, 0, 0, 0, 0}
+   7   {0, 0, 0, 1, 0, 0, 0}
+   8   {0, 0, 2, 1, 0, 0, 0}
+   9   {0, 0, 1, 2, 1, 0, 0}
+   10   {0, 0, 1, 2, 2, 0, 0}
+   11   {0, 1, 1, 2, 1, 2, 0}
+   ...
+    (2, 3), (3, 4), (4, 5), (5, 6)
+    */
+    if (Difficulty == 1)
+    {
+        int columnDrop = rand() % (7 + 1 - 1) + 1;
+        //LCD.Write(columnDrop);
+        (*P1).updateBoard(columnDrop, 2);
+    }
+    else if (Difficulty == 2)
+    {
+        
+        if (turnCount <= 4)
+        {
+            LCD.Write(turnCount);
+            int columnDrop = rand() % (10 + 1 - 8) + 8;
+            LCD.Write(columnDrop);
+            (*P1).updateBoard(columnDrop, 2);
+            
+        }
+        if (turnCount > 4)
+        {
+            for (int i = 6; i < 13; i++)
+            {
+                for (int j = 6; j < 12; j++)
+                {
+                    // LCD.Write((*P1).board[i][j]);
+                    //LCD.ClearBuffer();
+                    if ((*P1).board[i][j] == playerNumber)
+                    {   
+                                
+                        //left
+                        if ((*P1).board[i-1][j] == 1)
+                        {
+                            
+                            if ((*P1).board[i-2][j] == 1)
+                            {
+                                (*P1).updateBoard(i-3, 2);
+                            } 
+                        } 
+                        //right
+                        else if ((*P1).board[i+1][j] == 1)
+                        {
+                            if ((*P1).board[i+2][j] == 1)
+                            {
+                                (*P1).updateBoard(i+3, 2);
+                            } 
+                        } 
+                        //top[]
+                        else if ((*P1).board[i][j-1] == 1)
+                        {
+                            if ((*P1).board[i][j-2] == 1)
+                            {
+                                (*P1).updateBoard(i, 2);
+                            } 
+                        } 
+                    }
+                }
+            }
+        }
+        ++turnCount;
+    }
 }
 
 player::player (char nm[], int wins, int losses, int ties, char theme[], int totalPiecesPlaced, bool play, int PlayerNumbers)
@@ -357,9 +585,9 @@ player::player (char nm[], int wins, int losses, int ties, char theme[], int tot
     Play = play;
     PlayerNumbers = PlayerNumbers;
     
-    for (int i = 0; i < 7; i++)
+    for (int i = 6; i < 13; i++)
     {
-        for (int j = 0; j < 6; j++)
+        for (int j = 6; j < 12; j++)
         {
             board [i][j] = 0;
         }
@@ -367,13 +595,14 @@ player::player (char nm[], int wins, int losses, int ties, char theme[], int tot
   
 }
 
-AI::AI (int difficulty, int wins, int losses, int ties, int totalPiecesPlaced)
+AI::AI (int difficulty, int wins, int losses, int ties, int totalPiecesPlaced, int turn)
 {
     Difficulty = difficulty;
     Wins = wins;
     Losses = losses;
     Ties = ties;
     TotalPiecesPlaced = totalPiecesPlaced;
+    turnCount = turn;
 }
 
 void AI::setDifficulty()
@@ -491,8 +720,12 @@ void player::dropPiece(player *P1, int playerNumber)
         LCD.FillCircle(x_trash, y_trash, 10);
 //LCD.Write("1");
         drawBoard(false);
+        (*P1).updateBoard(0, 5);
         Sleep(10);
     };
+
+    x_position = x_init;
+    y_position = y_init;
 
         drawBoard(true);
         
@@ -508,6 +741,7 @@ void player::dropPiece(player *P1, int playerNumber)
                 LCD.FillCircle(x_init, ++y_init, 10);
             
                 drawBoard(false);
+                (*P1).updateBoard(0, 5);
                 Sleep (10);
                 }
 
@@ -558,40 +792,36 @@ void player::dropPiece(player *P1, int playerNumber)
                 LCD.FillCircle(x_init, ++y_init, 10);
             
                 drawBoard(false);
+                (*P1).updateBoard(0, 5);
                 Sleep (10);
             }
             }
-    LCD.Write("sus");
+    //LCD.Write("sus");
 
 }
 
 void player::updateBoard(int column, int playerNumber)
 {
-
-    
     //nested for loop to draw the holes inside the board at equal increments
-    for (int i = 0; i < 7; i++)
+    for (int i = 6; i < 13; i++)
     {
-        for (int j = 0; j < 6; j++)
+        for (int j = 6; j < 12; j++)
         {
             if (board [i][j] == 1)
             {
                 LCD.SetFontColor(RED);
-                LCD.FillCircle(30 + (28*i), 63 + (29*j), 10);
+                LCD.FillCircle(30 + (28*(i-6)), 63 + (29*(j-6)), 10);
             }
             if (board [i][j] == 2)
             {
                 LCD.SetFontColor(YELLOW);
-                LCD.FillCircle(30 + (28*i), 63 + (29*j), 10);
+                LCD.FillCircle(30 + (28*(i-6)), 63 + (29*(j-6)), 10);
             }
         }
     }
     
-
-    
-    LCD.Write("grefres");
     int i = 0;
-    while (i < 5 && board[column-1][i+1] == 0)
+    while (i < 5 && board[column+5][i+7] == 0)
     {
         LCD.SetFontColor(WHITE);
         LCD.FillCircle(30 + (28*(column-1)), 63 + (29*i), 10);
@@ -606,9 +836,11 @@ void player::updateBoard(int column, int playerNumber)
         }
         
         LCD.FillCircle(30 + (28*(column-1)), 63 + (29*(i+1)), 10);
-        Sleep(500);
+        Sleep(100);
         ++i;
     }
-    board[column-1][i] = playerNumber;
-    LCD.Write(playerNumber);
+    
+        board[column+5][i+6] = playerNumber;
+    
 }
+
