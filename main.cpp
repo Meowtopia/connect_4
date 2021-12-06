@@ -113,7 +113,7 @@ LCD.WriteAt("3.Place chip on board.", 0, 130);
 LCD.WriteAt("4.The game will continue", 0, 150);
 LCD.WriteAt("until there are four chips", 0, 170);
 LCD.WriteAt("in one path.", 0, 190);
-}
+}//ending bracket
 
 //draw credits
 void drawCredits()
@@ -148,28 +148,39 @@ int backButton ()
     }
     return 0;
 }
-
+/*
+class player, contains functions selectPieceTheme that selects piece theme, dropPiece that drops a piece for a player, updateStats that updates stats, updateBoard that updates the board
+variables play for player two that is false when single player is selected, board a 20x20 array that mimics a connect 4 board, Nm for name, Wins for losses, Ties for ties, Theme for theme,
+TotalPiecesPlaced for total pieces placed, and playerNumber which is 1 for player 1 and 2 for player 2.
+*/
 class player 
 {
     public:
+        //calls constructor
         player(char nm[] = "Player", int wins = 0, int losses = 0, int ties = 0, char theme[] = "normal", int totalPiecesPlaced = 0, bool play = false, int PlayNumber = 0);
+        //Selects peice theme
         void selectPieceTheme();
+        //Drops piece
         void dropPiece(player*, int playerNumber);
+        //updates stats
         void updateStats();
+        //updates board, takes arguments column for the column that a peice is added to and player number, the player that dropped the piece.
         void updateBoard(int column, int playerNumber);
+        //bool checkTopRow(int column);
+        //true for player 1, true for player 2 when two player selected, otherwise false.
         bool Play;
+        //20x20 board, actually 7x6. The added space is so that checkWin does not give a seg fault or whatever when checking for pieces outside of its dimensions
         int board [20][20];
     private:
         //name
         char Nm[25];
         //stats
-        
         int Wins;
         int Losses;
         int Ties;
         char Theme[25];
         int TotalPiecesPlaced;
-        
+        //1 for player 1 and 2 for player 2
         int playerNumber;
 };
 
@@ -178,20 +189,25 @@ class AI
     public:
         AI(int difficulty = 1, int wins = 0, int losses = 0, int ties = 0, int totalPiecesPlaced = 0, int turnCount = 1);
         
-        void AIDropPiece(player*);
+        //drop an AI piece, *tries* to utilize AI funcitonality
+        int AIDropPiece(player*);
+        //update stats
         void updateStats();
+        //sets difficulty
         void setDifficulty();
     private:
         //stats
+        //2 for AI
         int playerNumber;
         int Wins;
         int Losses;
         int Ties;
         int Difficulty;
         int TotalPiecesPlaced;
+        //counts turn count, for AI.
         int turnCount;
 };
-
+//draws board
 void drawBoard(bool passThruHoles)
 {
     LCD.SetFontColor(BLUE);
@@ -218,9 +234,10 @@ void drawBoard(bool passThruHoles)
     }
 }
 
-
+//adds interactibility to menu. Calls other functions based on clicking of setting on menu 
 void menuTransition(int menucheck, player *p1, player *p2, AI *pc) 
 {
+    //loop exit condition
     int exit = 0;
 
     while (exit == 0)
@@ -228,30 +245,36 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
     //while no menu element is selected
     while (menucheck == 0)
     {
+        //draws menu
         drawMenu();
         //checks for menu touch
         menucheck = menuCheck();
     }
     //LCD.Clear();
-    //if player 1 selected
+    //if singpleplayer selected, set difficulty of AI and select player 1 theme
     while (menucheck == 1)
     {
         //LCD.WriteAt("Play game here", 10, 60);
+        //player 1 select piece theme
         (*p1).selectPieceTheme();
+        //Ai set difficulty
         (*pc).setDifficulty();
 
         (*p1).Play = true;
+        //so player 2 does not intrude
         (*p2).Play = false;
         menucheck = 11111;
+        //exits loop
         exit = 1;
         //if back button selected
     }
-    //plyaer 2 selected
+    //2 player multiplayer selected
     while (menucheck == 2)
     {
         //LCD.WriteAt("Play game here", 95, 165);
         (*p1).selectPieceTheme();
         (*p2).selectPieceTheme();
+        //player 1 and player 2 play
         (*p1).Play = true;
         (*p2).Play = true;
         
@@ -305,7 +328,7 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
     }
 }
 
-
+//checks for 4 in a row, winner
 int checkWin(player *P1, player *P2, int playerNumber)
 {
     /*
@@ -322,6 +345,8 @@ int checkWin(player *P1, player *P2, int playerNumber)
     (2, 3), (3, 4), (4, 5), (5, 6)
     */
     //int winCheck = 1;
+    //loops through entire board, checks for four in a row based on player number input.
+    //player number is 1 for player 1, 2 for AI or player 2
     for (int i = 6; i < 13; i++)
     {
         for (int j = 6; j < 12; j++)
@@ -337,6 +362,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
                             {
                                 if ((*P1).board[i-3][j-3] == playerNumber)
                                 {
+                                    //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
                                     //Sleep(5000);
@@ -344,7 +370,6 @@ int checkWin(player *P1, player *P2, int playerNumber)
                             } 
                         } 
                         //left
-                        
                         else if ((*P1).board[i-1][j] == playerNumber)
                         {
                             
@@ -352,6 +377,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
                             {
                                 if ((*P1).board[i-3][j] == playerNumber)
                                 {
+                                    //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
                                     //Sleep(5000);
@@ -366,6 +392,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
                             {
                                 if ((*P1).board[i-3][j+3] == playerNumber)
                                 {
+                                    //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
                                     //Sleep(5000);
@@ -379,6 +406,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
                             {
                                 if ((*P1).board[i][j+3] == playerNumber)
                                 {
+                                    //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
                                     //Sleep(5000);
@@ -392,6 +420,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
                             {
                                 if ((*P1).board[i+3][j+3] == playerNumber)
                                 {
+                                    //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
                                     //Sleep(5000);
@@ -405,6 +434,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
                             {
                                 if ((*P1).board[i+3][j] == playerNumber)
                                 {
+                                    //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
                                    // Sleep(5000);
@@ -418,6 +448,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
                             {
                                 if ((*P1).board[i+3][j-3] == playerNumber)
                                 {
+                                    //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
                                     //Sleep(5000);
@@ -431,6 +462,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
                             {
                                 if ((*P1).board[i][j-3] == playerNumber)
                                 {
+                                    //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
                                     //Sleep(5000);
@@ -440,6 +472,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
             }
         }
     }
+    //ends function, main loop continues because no winner found
     return 0;
 }
 //int main
@@ -452,58 +485,58 @@ int main() {
    drawMenu();
 
     //check for menu
-
     int menucheck = 0;
 
-    
-
+    //instantiates objects for player 1, player 2, and AI opponent
     player P1("Player 1", 0, 0, 0, " ", 0, 1);
     player P2("Player 2", 0, 0, 0, " ", 0, 2);
     AI opponent;
 
-
-    // Clear background
-
-
     //clear screen
     LCD.ClearBuffer();
 
+    //checks for clicking of menu elements
     menuTransition(menucheck, &P1, &P2, &opponent);
 
-
-    LCD.Write("sussy");
     //update LCD
     LCD.Update();
     
+    //clear LCD
     LCD.Clear();
 
+    //draws board
     drawBoard(false);
 
-    bool win = false;
+    //0 when no winner is found, 1 when player 1 wins, 2 when AI or player 2 wins
     int winner = 0;
     
-
+    //while no winner is found... play game
     while (winner == 0)
     {
+        //player 1
         if (winner == 0)
         {
+            //player 1 drops piece
             (P1).dropPiece(&P1, 1);
+            //checks win based on player 1 pieces
             winner = checkWin(&P1, &P2, 1);
         }
+        //player 2
         if (P2.Play && winner == 0)
         {
+            //player 2 drops piece
            (P2).dropPiece(&P1, 2); 
+           //checks win based on player 2 pieces
            winner = checkWin(&P1, &P2, 2);
-           //LCD.Write ("bakka");
         }
-        
+        //AI
         else if (winner == 0)
         {
             (opponent).AIDropPiece(&P1);
             winner = checkWin(&P1, &P2, 2);
         }
-        
     }
+    //end screen
     LCD.Write("Game overe");
     LCD.Write(winner);
     LCD.Write(" wins!!");
@@ -513,9 +546,10 @@ int main() {
     return 0;
 }
 
-void AI::AIDropPiece(player *P1)
+//AI drop piece with AI "functionality"
+int AI::AIDropPiece(player *P1)
 {
-    LCD.Write(Difficulty);
+    //LCD.Write(Difficulty);
     /*
     |   ->
     8
@@ -530,41 +564,55 @@ void AI::AIDropPiece(player *P1)
    ...
     (2, 3), (3, 4), (4, 5), (5, 6)
     */
+
+    //if easiest difficulty selected, AI just places pieces in random column
     if (Difficulty == 1)
     {
+        //generates random column from 1 to 7
         int columnDrop = rand() % (7 + 1 - 1) + 1;
         //LCD.Write(columnDrop);
         (*P1).updateBoard(columnDrop, 2);
+        //end
+        return 0;
     }
+    //
     else if (Difficulty == 2)
     {
-        
-        if (turnCount <= 4)
+        //so that it doesnt move twice, doesnt really work yet
+        bool move = true;
+        //first three moves, because dominate center or whatever
+        if (turnCount < 3)
         {
-            LCD.Write(turnCount);
-            int columnDrop = rand() % (10 + 1 - 8) + 8;
-            LCD.Write(columnDrop);
+            //generates random number in column from 3 to 5, center
+            int columnDrop = rand() % (5 + 1 - 3) + 3;
+            //drops piece
             (*P1).updateBoard(columnDrop, 2);
-            
         }
-        if (turnCount > 4)
+
+        //drop pieces based on opposing pieces and own pieces, else drops random piece
+        if (turnCount >= 3)
         {
+            //for loop to scan through board and detecs 3 in arow opposing pieces, drops a piece to stop
+            //opponent from winning.
+            
+            //if opponent does not have 3 in a row, it drops a piece to continue its consecutive placings
             for (int i = 6; i < 13; i++)
             {
                 for (int j = 6; j < 12; j++)
                 {
-                    // LCD.Write((*P1).board[i][j]);
-                    //LCD.ClearBuffer();
-                    if ((*P1).board[i][j] == playerNumber)
-                    {   
-                                
+                    //stop opponent's placings
+                    if ((*P1).board[i][j] == 1)
+                    {     
                         //left
                         if ((*P1).board[i-1][j] == 1)
                         {
-                            
                             if ((*P1).board[i-2][j] == 1)
                             {
-                                (*P1).updateBoard(i-3, 2);
+                                move = false;
+                                //drops piece
+                                (*P1).updateBoard(i-8, 2);
+                                //end loop
+                                return 0;
                             } 
                         } 
                         //right
@@ -572,7 +620,11 @@ void AI::AIDropPiece(player *P1)
                         {
                             if ((*P1).board[i+2][j] == 1)
                             {
-                                (*P1).updateBoard(i+3, 2);
+                                move = false;
+                                //drops piece
+                                (*P1).updateBoard(i-2, 2);
+                                //end loop
+                                return 0;
                             } 
                         } 
                         //top[]
@@ -580,17 +632,75 @@ void AI::AIDropPiece(player *P1)
                         {
                             if ((*P1).board[i][j-2] == 1)
                             {
-                                (*P1).updateBoard(i, 2);
+                                move = false;
+                                //drops piece
+                                (*P1).updateBoard(i-5, 2);
+                                //end loop
+                                return 0;
+                            } 
+                        } 
+                    }
+                    //continue own cosecutive placings
+                    else if ((*P1).board[i][j] == 2)
+                    {           
+                        //left
+                        if ((*P1).board[i-1][j] == 2)
+                        {
+                            
+                            if ((*P1).board[i-2][j] == 2)
+                            {
+                                move = false;
+                                //drops piece
+                                (*P1).updateBoard(i-8, 2);
+                                //end loop
+                                return 0;
+                            } 
+                        } 
+                        //right
+                        else if ((*P1).board[i+1][j] == 2)
+                        {
+                            if ((*P1).board[i+2][j] == 2)
+                            {
+                                move = false;
+                                //drops piece
+                                (*P1).updateBoard(i-2, 2);
+                                //end loop
+                                return 0;
+                            } 
+                        } 
+                        //top[]
+                        else if ((*P1).board[i][j-1] == 2)
+                        {
+                            if ((*P1).board[i][j-2] == 2)
+                            {
+                                move = false;
+                                //drops piece
+                                (*P1).updateBoard(i-5, 2);
+                                //end loop
+                                return 0;
                             } 
                         } 
                     }
                 }
             }
+            //if opponent doe snot have 3 in a row and no consecutive own placings, AI drops a random placing.
+            if (move)
+            {
+                //random piece column generated
+                int columnDrop = rand() % (5 + 1 - 3) + 3;
+                //drops random piece
+                (*P1).updateBoard(columnDrop, 2);
+                move = false;
+                //end loop
+                return 0;
+            }
         }
+        //increments turn count
         ++turnCount;
     }
 }
 
+//player constructor
 player::player (char nm[], int wins, int losses, int ties, char theme[], int totalPiecesPlaced, bool play, int PlayerNumbers)
 {
     strcpy (Nm, nm);
@@ -658,7 +768,7 @@ void AI::setDifficulty()
         }
         else if (y_position > 178 && y_position < 200)
         {
-            Difficulty = 3;
+            Difficulty = 2;
             exit = 1;
         }
     }
@@ -840,6 +950,7 @@ void player::updateBoard(int column, int playerNumber)
     int i = 0;
     while (i < 5 && board[column+5][i+7] == 0)
     {
+        //LCD.Write("susgdf");
         LCD.SetFontColor(WHITE);
         LCD.FillCircle(30 + (28*(column-1)), 63 + (29*i), 10);
         if (playerNumber == 1)
