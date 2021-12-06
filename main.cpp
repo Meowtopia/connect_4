@@ -15,6 +15,18 @@ void drawMenu ()
    FEHIMAGE pic1; //draw pic pic
 	pic1.Open("connect4pageFEH.pic");
 	pic1.Draw(0,0);//draw pic
+    //draw cookie
+  LCD.SetFontColor(WHEAT);
+    LCD.DrawCircle(10,10,10);
+LCD.SetFontColor(YELLOW);
+    LCD.FillCircle(10,10,10);
+    LCD.SetFontColor(RED);
+    LCD.DrawPixel(5,5);
+    LCD.DrawPixel(2,2);
+    LCD.DrawPixel(2,8);
+    LCD.DrawPixel(8,4);
+    LCD.DrawPixel(3,6);
+
    
     //set font color
     LCD.SetFontColor(LCD.Black);
@@ -187,7 +199,11 @@ void drawBoard(bool passThruHoles)
     LCD.FillRectangle(10, 45, 210, 180);
     
     LCD.SetFontColor(WHITE);
-
+     FEHIMAGE bank1,bank2; //draw pic pic
+	bank1.Open("P1 bankFEH.pic");
+	bank1.Draw(70,225);//draw pic
+    bank2.Open("P2 bankFEH.pic");
+	bank2.Draw(150,225);//draw pic
     if (!passThruHoles)
     {
     //nested for loop to draw the holes inside the board at equal increments
@@ -195,6 +211,7 @@ void drawBoard(bool passThruHoles)
     {
         for (int j = 6; j < 12; j++)
         {
+            LCD.SetFontColor(WHITE);
             LCD.FillCircle(30 + (28*(i-6)), 63 + (29*(j-6)), 10);
         }
     }
