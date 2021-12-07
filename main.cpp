@@ -230,12 +230,17 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
     //if singpleplayer selected, set difficulty of AI and select player 1 theme
     while (menucheck == 1)
     {
-        //LCD.WriteAt("Play game here", 10, 60);
-        //player 1 select piece theme
-        //(*p1).selectPieceTheme();
-        //(*p1).selectPieceTheme();
-        //Ai set difficulty
         (*pc).setDifficulty();
+
+        //back button
+        if (backButton() == 1)
+        {
+            LCD.Clear();
+            //sets menu check to 0, goes back to main screen
+            menucheck = 0;
+            exit = 1;
+            
+        }
 
         (*p1).Play = true;
         //so player 2 does not intrude
@@ -248,18 +253,14 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
     //2 player multiplayer selected
     while (menucheck == 2)
     {
-        //LCD.WriteAt("Play game here", 95, 165);
-        //(*p1).selectPieceTheme();
-        //(*p2).selectPieceTheme();
-        //(*p1).selectPieceTheme();
-        //(*p2).selectPieceTheme();
         //player 1 and player 2 play
         (*p1).Play = true;
         (*p2).Play = true;
         
+        //exits loop
         menucheck = 11111;
         exit = 1;
-        //if back button selected
+        
     }
     //records selected
     while (menucheck == 3)
@@ -663,22 +664,6 @@ int main() {
 //AI drop piece with AI "functionality"
 int AI::AIDropPiece(player *P1)
 {
-    //LCD.Write(Difficulty);
-    /*
-    |   ->
-    8
-       6   7  8  9  10 11 12
-       1   2  3  4  5  6  7
-   6   {0, 0, 0, 0, 0, 0, 0}
-   7   {0, 0, 0, 1, 0, 0, 0}
-   8   {0, 0, 2, 1, 0, 0, 0}
-   9   {0, 0, 1, 2, 1, 0, 0}
-   10   {0, 0, 1, 2, 2, 0, 0}
-   11   {0, 1, 1, 2, 1, 2, 0}
-   ...
-    (2, 3), (3, 4), (4, 5), (5, 6)
-    */
-
     //if easiest difficulty selected, AI just places pieces in random column
     if (Difficulty == 1)
     {
@@ -689,7 +674,7 @@ int AI::AIDropPiece(player *P1)
         //end
         return 0;
     }
-    //
+    //easy r easier difficulty isselected
     else if (Difficulty == 2)
     {
         //so that it doesnt move twice, doesnt really work yet
@@ -708,7 +693,6 @@ int AI::AIDropPiece(player *P1)
         {
             //for loop to scan through board and detecs 3 in arow opposing pieces, drops a piece to stop
             //opponent from winning.
-            
             //if opponent does not have 3 in a row, it drops a piece to continue its consecutive placings
             for (int i = 6; i < 13; i++)
             {
