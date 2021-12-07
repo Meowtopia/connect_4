@@ -423,10 +423,10 @@ int checkWin(player *P1, player *P2, int playerNumber)
                                 } 
                             } 
                         } 
+
                         //left
                         else if ((*P1).board[i-1][j] == playerNumber)
                         {
-                            
                             if ((*P1).board[i-2][j] == playerNumber)
                             {
                                 if ((*P1).board[i-3][j] == playerNumber)
@@ -451,6 +451,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
                                 } 
                             } 
                         } 
+
                         //bottom 
                         else if ((*P1).board[i][j+1] == playerNumber)
                         {
@@ -605,10 +606,10 @@ int main() {
         }
     }
     //end screen
-    LCD.Write("Game overe");
-    LCD.Write(winner);
-    LCD.Write(" wins!!");
-    Sleep(500);
+    FEHIMAGE end; //initialize pic variable
+    end.Open("end screenFEH.pic");
+    end.Draw(0,0);//draw pic
+    Sleep(5000);
     LCD.WriteLine(" ");
     
     //if player 1 wins
@@ -643,22 +644,6 @@ int main() {
 //AI drop piece with AI "functionality"
 int AI::AIDropPiece(player *P1)
 {
-    //LCD.Write(Difficulty);
-    /*
-    |   ->
-    8
-       6   7  8  9  10 11 12
-       1   2  3  4  5  6  7
-   6   {0, 0, 0, 0, 0, 0, 0}
-   7   {0, 0, 0, 1, 0, 0, 0}
-   8   {0, 0, 2, 1, 0, 0, 0}
-   9   {0, 0, 1, 2, 1, 0, 0}
-   10   {0, 0, 1, 2, 2, 0, 0}
-   11   {0, 1, 1, 2, 1, 2, 0}
-   ...
-    (2, 3), (3, 4), (4, 5), (5, 6)
-    */
-
     //if easiest difficulty selected, AI just places pieces in random column
     if (Difficulty == 1)
     {
