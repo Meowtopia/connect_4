@@ -1,3 +1,9 @@
+/*
+Connect 4 game made by Ross Aiello and Ayyuob Abdel-Aziz
+Made from 12/1/2021 to 12/7/2021 for FEH 1281.01
+Software design project
+*/
+
 //headers
 #include "FEHLCD.h"
 #include "FEHUtility.h"
@@ -7,9 +13,11 @@
 #include <vector>
 #include <fstream>
 
+//for C++ don't have to include std::
 using namespace std;
 
 //draws the menu
+//made by Ross and Ayyuob
 void drawMenu ()
 {
    FEHIMAGE pic1; //initialize pic variable
@@ -23,6 +31,7 @@ void drawMenu ()
 /*returns 0 if no menu is selected, returns 1 if player 1 is selected
 2 if player 2 selected, 3 for records, 4 for instructions, 5 for credits 
 */
+//made by Ross and Ayyuob
 int menuCheck()
 {
     //holds position of click/tap
@@ -74,6 +83,7 @@ return 0;
 }//ending bracket
 
 //draws instructions
+//made by Ross and Ayyuob
 void drawInstructions()
 {
     LCD.WriteAt("", 0, 30);
@@ -89,6 +99,7 @@ LCD.WriteAt("the game ends in a tie.",0, 190);
 }//ending bracket
 
 //draw credits
+//made by Ross and Ayyuob
 void drawCredits()
 {
     //we da real
@@ -102,6 +113,7 @@ void drawCredits()
 /* Returns 1 when back button is pressed
 Otherwise returns 0
 */
+//made by Ross
 int backButton ()
 {
     //draws back button
@@ -126,6 +138,7 @@ class player, contains functions selectPieceTheme that selects piece theme, drop
 variables play for player two that is false when single player is selected, board a 20x20 array that mimics a connect 4 board, Nm for name, Wins for losses, Ties for ties, Theme for theme,
 TotalPiecesPlaced for total pieces placed, and playerNumber which is 1 for player 1 and 2 for player 2.
 */
+//made by Ross
 class player 
 {
     public:
@@ -157,6 +170,8 @@ class player
         char Theme[25];
 };
 
+//class AI opponent
+//made by Ross 
 class AI 
 {
     public:
@@ -181,6 +196,7 @@ class AI
         int turnCount;
 };
 //draws board
+//made by Ross and Ayyuob
 void drawBoard(bool passThruHoles)
 {
     LCD.SetFontColor(BLUE);
@@ -211,6 +227,7 @@ void drawBoard(bool passThruHoles)
 }
 
 //adds interactibility to menu. Calls other functions based on clicking of setting on menu 
+//made by Ross and Ayyuob
 void menuTransition(int menucheck, player *p1, player *p2, AI *pc) 
 {
     //loop exit condition
@@ -231,16 +248,6 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
     while (menucheck == 1)
     {
         (*pc).setDifficulty();
-
-        //back button
-        if (backButton() == 1)
-        {
-            LCD.Clear();
-            //sets menu check to 0, goes back to main screen
-            menucheck = 0;
-            exit = 1;
-            
-        }
 
         (*p1).Play = true;
         //so player 2 does not intrude
@@ -328,6 +335,7 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
 
 //resets the board before and after games, set all to 0
 //player 1 board is used as main board
+//made by Ross and Ayyuob
 void resetBoard(player *P1)
 {
     //nested for loop to set all elements inside board array to 0
@@ -341,6 +349,7 @@ void resetBoard(player *P1)
 }
 
 //reads the stats file, sets corresponding stat variables of the objects to the stats file.
+//made by Ross 
 void readStatsFile(fstream& stats, player *P1, player *P2, AI *Ai)
 {
     while (true)
@@ -353,6 +362,7 @@ void readStatsFile(fstream& stats, player *P1, player *P2, AI *Ai)
 }
 
 //updates the stat file after a game with the new stats of each object after each game
+//made by Ross
 void updateStatsFile(fstream& stats, player *P1, player *P2, AI *Ai)
 {
     //clears flag to write to file
@@ -362,6 +372,7 @@ void updateStatsFile(fstream& stats, player *P1, player *P2, AI *Ai)
 }
 
 //checks for 4 in a row, winner
+//made by Ross and Ayyuob
 int checkWin(player *P1, player *P2, int playerNumber)
 {
     //loops through entire board, checks for four in a row based on player number input.
@@ -488,6 +499,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
 
     //checks for tie, returns 3 if true
     //made nested for loops to improve readability
+    //made by Ross and Ayyuob
     if (((*P1).board[6][6] == 1 || (*P1).board[6][6] == 2))
     {
         if (((*P1).board[7][6] == 1 || (*P1).board[7][6] == 2))
@@ -514,6 +526,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
     return 0;
 }
 //int main
+//made by Ross and Ayyuob
 int main() {
     //C++ pointer to stats file
    fstream stats;
@@ -526,142 +539,143 @@ int main() {
     //infinite loop to run program
     while(true)
     {
-    //opens stats file
-    stats.open ("stats.txt");
+        //opens stats file
+        stats.open ("stats.txt");
 
-    //resets board to all 0s, readies for play
-    resetBoard(&P1);
-   
-   //reads stats file, sets stat variables from objects to read data from stats file
-    readStatsFile(stats, &P1, &P2, &opponent);
-
-    Sleep(5);
-
-    //draw initial menu
-    drawMenu();
-
-    //check for menu
-    int menucheck = 0;
-
-    //clear screen
-    LCD.ClearBuffer();
-
-    //checks for clicking of menu elements
-    menuTransition(menucheck, &P1, &P2, &opponent);
-
-    //update LCD
-    LCD.Update();
+        //resets board to all 0s, readies for play
+        resetBoard(&P1);
     
-    //clear LCD
-    LCD.Clear();
+    //reads stats file, sets stat variables from objects to read data from stats file
+        readStatsFile(stats, &P1, &P2, &opponent);
 
-    //draws board
-    drawBoard(false);
+        Sleep(5);
 
-    //0 when no winner is found, 1 when player 1 wins, 2 when AI or player 2 wins
-    int winner = 0;
+        //draw initial menu
+        drawMenu();
 
-    //for end screen
-    int loser = 0;
-    
-    //while no winner is found... play game
-    while (winner == 0)
-    {
-        //player 1
-        if (winner == 0)
+        //check for menu
+        int menucheck = 0;
+
+        //clear screen
+        LCD.ClearBuffer();
+
+        //checks for clicking of menu elements
+        menuTransition(menucheck, &P1, &P2, &opponent);
+
+        //update LCD
+        LCD.Update();
+        
+        //clear LCD
+        LCD.Clear();
+
+        //draws board
+        drawBoard(false);
+
+        //0 when no winner is found, 1 when player 1 wins, 2 when AI or player 2 wins
+        int winner = 0;
+
+        //for end screen
+        int loser = 0;
+        
+        //while no winner is found... play game
+        while (winner == 0)
         {
-            LCD.SetFontColor(RED);
-            LCD.WriteAt("Player   's Turn", 5, 5);
-            LCD.WriteAt(1, 90, 5);
-            //player 1 drops piece
-            (P1).dropPiece(&P1, 1);
+            //player 1
+            if (winner == 0)
+            {
+                LCD.SetFontColor(RED);
+                LCD.WriteAt("Player   's Turn", 5, 5);
+                LCD.WriteAt(1, 90, 5);
+                //player 1 drops piece
+                (P1).dropPiece(&P1, 1);
+                //update stats total pieces dropped
+                (P1).updateStats(0, 0, 0, 1);
+                //checks win based on player 1 pieces
+                winner = checkWin(&P1, &P2, 1);
+            }
+            //player 2
+            if (P2.Play && winner == 0)
+            {
+                LCD.SetFontColor(YELLOW);
+                LCD.WriteAt("Player   's Turn", 5, 5);
+                LCD.WriteAt(2, 90, 5);
+                //player 2 drops piece
+            (P2).dropPiece(&P1, 2); 
             //update stats total pieces dropped
-            (P1).updateStats(0, 0, 0, 1);
-            //checks win based on player 1 pieces
-            winner = checkWin(&P1, &P2, 1);
-        }
-        //player 2
-        if (P2.Play && winner == 0)
-        {
-            LCD.SetFontColor(YELLOW);
-            LCD.WriteAt("Player   's Turn", 5, 5);
-            LCD.WriteAt(2, 90, 5);
-            //player 2 drops piece
-           (P2).dropPiece(&P1, 2); 
-           //update stats total pieces dropped
-            (P2).updateStats(0, 0, 0, 1);
-           //checks win based on player 2 pieces
-           winner = checkWin(&P1, &P2, 2);
-        }
-        //AI
-        else if (winner == 0)
-        {
-            //drop AI piece
-            (opponent).AIDropPiece(&P1);
-            //adds a total piece drop to AI TotalPiecesDropped varible
-            (opponent).updateStats(0, 0, 0, 1);
-            //checks for AI win
+                (P2).updateStats(0, 0, 0, 1);
+            //checks win based on player 2 pieces
             winner = checkWin(&P1, &P2, 2);
+            }
+            //AI
+            else if (winner == 0)
+            {
+                //drop AI piece
+                (opponent).AIDropPiece(&P1);
+                //adds a total piece drop to AI TotalPiecesDropped varible
+                (opponent).updateStats(0, 0, 0, 1);
+                //checks for AI win
+                winner = checkWin(&P1, &P2, 2);
+            }
         }
-    }
-    
-    //if player 1 wins
-    if (winner == 1)
-    {
-        //add a win to player 1 wins stats
-        (P1).updateStats(1, 0, 0, 0);
-        loser = 2;
-    }
-    //if player 2 or AI wins
-    else if (winner == 2)
-    {
-        if (P2.Play)
+        
+        //if player 1 wins
+        if (winner == 1)
         {
-            //add a win to player 2 wins stats
-            (P2).updateStats(1, 0, 0, 0);   
-            (P2).updateStats(1, 0, 0, 0);
-            loser = 1;   
+            //add a win to player 1 wins stats
+            (P1).updateStats(1, 0, 0, 0);
+            loser = 2;
         }
-        else
+        //if player 2 or AI wins
+        else if (winner == 2)
         {
-            //add a win to AI wins stats
-            (opponent).updateStats(1, 0, 0, 0);
+            if (P2.Play)
+            {
+                //add a win to player 2 wins stats
+                (P2).updateStats(1, 0, 0, 0);   
+                (P2).updateStats(1, 0, 0, 0);
+                loser = 1;   
+            }
+            else
+            {
+                //add a win to AI wins stats
+                (opponent).updateStats(1, 0, 0, 0);
+                loser = 1;
+            }
+        }
+
+        //tie
+        else if (winner == 3)
+        {
+            winner = 1;
             loser = 1;
         }
-    }
 
-    //tie
-    else if (winner == 3)
-    {
-        winner = 1;
-        loser = 1;
-    }
+        //write new data to stats file
+        updateStatsFile(stats, &P1, &P2, &opponent);
+        //close the stats file so changes can be saved
+        stats.close();
 
-    //write new data to stats file
-    updateStatsFile(stats, &P1, &P2, &opponent);
-    //close the stats file so changes can be saved
-    stats.close();
-
-    //end screen
-    FEHIMAGE end; //initialize pic variable
-    end.Open("end screenFEH.pic");
-    end.Draw(0,0);//draw pic
-    LCD.SetFontColor(RED);
-    LCD.WriteAt("P", 40, 92.5);
-    LCD.WriteAt(loser, 50, 92.5);
-    LCD.WriteAt("P", 40, 112.5);
-    LCD.WriteAt(winner, 50, 112.5);
-    if (winner == 3)
-    {
-        LCD.WriteAt("TIE", 40, 130);
+        //end screen
+        FEHIMAGE end; //initialize pic variable
+        end.Open("end screenFEH.pic");
+        end.Draw(0,0);//draw pic
+        LCD.SetFontColor(RED);
+        LCD.WriteAt("P", 40, 92.5);
+        LCD.WriteAt(loser, 50, 92.5);
+        LCD.WriteAt("P", 40, 112.5);
+        LCD.WriteAt(winner, 50, 112.5);
+        if (winner == 3)
+        {
+            LCD.WriteAt("TIE", 40, 130);
+        }
+        Sleep(5000);
     }
-    Sleep(5000);
-}
     //end main
     return 0;
 }
 
 //AI drop piece with AI "functionality"
+//made by Ross 
 int AI::AIDropPiece(player *P1)
 {
     //if easiest difficulty selected, AI just places pieces in random column
@@ -799,6 +813,7 @@ int AI::AIDropPiece(player *P1)
 }
 
 //player constructor, takes arguments name wins losses ties theme totalpiecesplaced play and player number and sets them
+//made by Ross
 player::player (char nm[], int wins, int losses, int ties, char theme[], int totalPiecesPlaced, bool play, int PlayerNumbers)
 {
     //sets name
@@ -830,6 +845,7 @@ player::player (char nm[], int wins, int losses, int ties, char theme[], int tot
 }
 
 //AI opponenent constructor takes arguments name wins losses ties  totalpiecesplaced and turn and initializes the values 
+//made by Ross
 AI::AI (int difficulty, int wins, int losses, int ties, int totalPiecesPlaced, int turn)
 {
     //sets difficulty, from 1 to 2
@@ -847,6 +863,7 @@ AI::AI (int difficulty, int wins, int losses, int ties, int totalPiecesPlaced, i
 }
 
 //sets difficulty of AI based on player selection
+//made by Ross and Ayyuob
 void AI::setDifficulty()
 {
     //exit check for loop
@@ -892,6 +909,7 @@ void AI::setDifficulty()
 }
 
 //updates stat variables, wins losses ties and totalpiecesplaced.
+//made by Ross 
 void player::updateStats(int wins, int losses, int ties, int totalPiecesPlaced)
 {
     Wins += wins;
@@ -901,6 +919,7 @@ void player::updateStats(int wins, int losses, int ties, int totalPiecesPlaced)
 }
 
 //updates stat variables, wins losses ties and totalpiecesplaced.
+//made by Ross
 void AI::updateStats(int wins, int losses, int ties, int totalPiecesPlaced)
 {
     Wins += wins;
@@ -910,6 +929,7 @@ void AI::updateStats(int wins, int losses, int ties, int totalPiecesPlaced)
 }
 
 //select piece theme. not fully implemented, do not plan to implement this
+//made by Ross and Ayyuob
 void player::selectPieceTheme()
 {
     //exit loop check
@@ -961,6 +981,7 @@ void player::selectPieceTheme()
 //drops a piece for the player. takes object player 1 to set the board and player number
 //player number is used to set the board index to corresponding piece and update the theme
 //when dropping
+//made by Ross and Ayyuob
 void player::dropPiece(player *P1, int playerNumber)
 {
     //hold position of touch
@@ -1120,6 +1141,7 @@ void player::dropPiece(player *P1, int playerNumber)
 }
 
 //updates the board to account for dropped piece
+//made by Ross 
 void player::updateBoard(int column, int playerNumber)
 {
     //nested for loop to draw the pieces based on whether it is occupied by player 1 or 2 or AI
