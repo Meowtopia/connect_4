@@ -189,10 +189,13 @@ void drawBoard(bool passThruHoles)
     
     LCD.SetFontColor(WHITE);
      FEHIMAGE bank1,bank2; //declare bank image variables
-	bank1.Open("P1 bankFEH.pic");//open bank1 picfile
+	bank1.Open("pxArtFEH.pic");//open bank1 picfile
 	bank1.Draw(70,225);//draw bank1
-    bank2.Open("P2 bankFEH.pic");//open bank2 picfile
+    bank2.Open("yellowbankFEH.pic");//open bank2 picfile
 	bank2.Draw(150,225);//draw bank2
+    LCD.SetFontColor(WHITE);
+    LCD.WriteAt("P1 Bank",225,65);
+    LCD.WriteAt("P2 Bank",225,140);
     if (!passThruHoles)
     {
     //nested for loop to draw the holes inside the board at equal increments
