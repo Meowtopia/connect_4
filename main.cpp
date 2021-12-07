@@ -146,6 +146,8 @@ class player
         int board [20][20];
         int Wins;
         int TotalPiecesPlaced;
+        //1 for player 1 and 2 for player 2
+        int playerNumber;
     private:
         //name
         char Nm[25];
@@ -153,8 +155,6 @@ class player
         int Losses;
         int Ties;
         char Theme[25];
-        //1 for player 1 and 2 for player 2
-        int playerNumber;
 };
 
 class AI 
@@ -569,6 +569,9 @@ int main() {
         //player 1
         if (winner == 0)
         {
+            LCD.SetFontColor(RED);
+            LCD.WriteAt("Player   's Turn", 5, 5);
+            LCD.WriteAt(1, 90, 5);
             //player 1 drops piece
             (P1).dropPiece(&P1, 1);
             //update stats total pieces dropped
@@ -579,6 +582,9 @@ int main() {
         //player 2
         if (P2.Play && winner == 0)
         {
+            LCD.SetFontColor(YELLOW);
+            LCD.WriteAt("Player   's Turn", 5, 5);
+            LCD.WriteAt(2, 90, 5);
             //player 2 drops piece
            (P2).dropPiece(&P1, 2); 
            //update stats total pieces dropped
@@ -597,12 +603,6 @@ int main() {
             winner = checkWin(&P1, &P2, 2);
         }
     }
-    //end screen
-    LCD.Write("Game overe");
-    LCD.Write(winner);
-    LCD.Write(" wins!!");
-    Sleep(500);
-    LCD.WriteLine(" ");
     
     //if player 1 wins
     if (winner == 1)
