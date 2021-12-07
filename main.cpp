@@ -12,22 +12,11 @@ using namespace std;
 //draws the menu
 void drawMenu ()
 {
-   FEHIMAGE pic1; //draw pic pic
-	pic1.Open("connect4pageFEH.pic");
+   FEHIMAGE pic1; //initialize pic variable
+	pic1.Open("cnfinalFEH.pic");
 	pic1.Draw(0,0);//draw pic
-    //draw cookie
-  LCD.SetFontColor(WHEAT);
-    LCD.DrawCircle(10,10,10);
-LCD.SetFontColor(YELLOW);
-    LCD.FillCircle(10,10,10);
-    LCD.SetFontColor(RED);
-    LCD.DrawPixel(5,5);
-    LCD.DrawPixel(2,2);
-    LCD.DrawPixel(2,8);
-    LCD.DrawPixel(8,4);
-    LCD.DrawPixel(3,6);
-
-   
+    
+   /*
     //set font color
     LCD.SetFontColor(LCD.Black);
     //player 1
@@ -42,7 +31,7 @@ LCD.SetFontColor(YELLOW);
     LCD.WriteAt("CREDITS", 130, 200);
 
     LCD.SetFontColor(LCD.White);
-
+*/
 }
 //adds interactibility to menu
 /*returns 0 if no menu is selected, returns 1 if player 1 is selected
@@ -58,17 +47,17 @@ int menuCheck()
     while(!LCD.Touch(&x_position,&y_position)) {};
     while(LCD.Touch(&x_trash,&y_trash)) {};
     //player 1 and 2 detection x positions
-    if (x_position > 120 && x_position < 190 )
+    if (x_position > 210 && x_position < 290 )
     {
         LCD.Clear(BLACK);
         //player 1
-        if (y_position > 50 && y_position < 85)
+        if (y_position > 45 && y_position < 60)
         {
             //LCD.WriteLine("Play game here");
             return 1;
         }
         //player 2
-        else if (y_position > 85 && y_position < 120)
+        else if (y_position > 70 && y_position < 85)
         {
             //LCD.WriteLine("player 2");
             return 2;
@@ -76,23 +65,23 @@ int menuCheck()
     }//ending bracket
 
     //records, instructions, and credits detections
-    if (x_position > 85 && x_position < 240)
+    if (x_position > 210 && x_position < 290)
     {
         LCD.Clear(BLACK);
         //records
-        if (y_position > 120 && y_position < 155)
+        if (y_position > 95 && y_position < 110)
         {
             //LCD.WriteLine("recrds");
             return 3;
         }
         //instructions
-        else if (y_position > 155 && y_position < 190)
+        else if (y_position > 125 && y_position < 140)
         {
             //LCD.WriteLine("instructions");
             return 4;
         }
         //credits
-        else if (y_position > 190 && y_position < 230)
+        else if (y_position > 160 && y_position < 175)
         {
             //LCD.WriteLine("credits");
             return 5;
