@@ -15,23 +15,7 @@ void drawMenu ()
    FEHIMAGE pic1; //initialize pic variable
 	pic1.Open("cnfinalFEH.pic");
 	pic1.Draw(0,0);//draw pic
-    
-   /*
-    //set font color
-    LCD.SetFontColor(LCD.Black);
-    //player 1
-    LCD.WriteAt("1P", 155, 60);
-    //player 2
-    LCD.WriteAt("2P", 155, 95);
-    //records/stats
-    LCD.WriteAt("RECORDS", 130, 130);
-    //instruction
-    LCD.WriteAt("INSTRUCTIONS", 95, 165);
-    //credits
-    LCD.WriteAt("CREDITS", 130, 200);
-
     LCD.SetFontColor(LCD.White);
-*/
 }
 
 
@@ -97,13 +81,13 @@ void drawInstructions()
 {
     LCD.WriteAt("", 0, 30);
 LCD.WriteAt("Instructions: ", 0, 50);
-LCD.WriteAt("1.Select desired chip", 0, 70);
-LCD.WriteAt("design.", 0, 90);
-LCD.WriteAt("2.Player 1 will go first.", 0, 110);
-LCD.WriteAt("3.Place chip on board.", 0, 130);
-LCD.WriteAt("4.The game will continue", 0, 150);
-LCD.WriteAt("until there are four chips", 0, 170);
-LCD.WriteAt("in one path.", 0, 190);
+
+LCD.WriteAt("1.Player 1 will go first.", 0, 70);
+LCD.WriteAt("2.Place chip on board.", 0, 90);
+LCD.WriteAt("3.The game will continue", 0, 110);
+LCD.WriteAt("until there are four chips", 0, 130);
+LCD.WriteAt("in one path.", 0, 150);
+LCD.WriteAt("4.If the board is filled")
 }//ending bracket
 
 //draw credits
@@ -206,11 +190,11 @@ void drawBoard(bool passThruHoles)
     LCD.FillRectangle(10, 45, 210, 180);
     
     LCD.SetFontColor(WHITE);
-     FEHIMAGE bank1,bank2; //draw pic pic
-	bank1.Open("P1 bankFEH.pic");
-	bank1.Draw(70,225);//draw pic
-    bank2.Open("P2 bankFEH.pic");
-	bank2.Draw(150,225);//draw pic
+     FEHIMAGE bank1,bank2; //declare bank image variables
+	bank1.Open("P1 bankFEH.pic");//open bank1 picfile
+	bank1.Draw(70,225);//draw bank1
+    bank2.Open("P2 bankFEH.pic");//open bank2 picfile
+	bank2.Draw(150,225);//draw bank2
     if (!passThruHoles)
     {
     //nested for loop to draw the holes inside the board at equal increments
