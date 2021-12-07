@@ -87,7 +87,7 @@ LCD.WriteAt("2.Place chip on board.", 0, 90);
 LCD.WriteAt("3.The game will continue", 0, 110);
 LCD.WriteAt("until there are four chips", 0, 130);
 LCD.WriteAt("in one path.", 0, 150);
-LCD.WriteAt("4.If the board is filled")
+LCD.WriteAt("4.If the board is filled", 0, 170);
 }//ending bracket
 
 //draw credits
@@ -231,6 +231,7 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
     {
         //LCD.WriteAt("Play game here", 10, 60);
         //player 1 select piece theme
+        (*p1).selectPieceTheme();
         //(*p1).selectPieceTheme();
         //Ai set difficulty
         (*pc).setDifficulty();
@@ -247,6 +248,8 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
     while (menucheck == 2)
     {
         //LCD.WriteAt("Play game here", 95, 165);
+        (*p1).selectPieceTheme();
+        (*p2).selectPieceTheme();
         //(*p1).selectPieceTheme();
         //(*p2).selectPieceTheme();
         //player 1 and player 2 play
@@ -400,6 +403,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
                         //left
                         else if ((*P1).board[i-1][j] == playerNumber)
                         {
+                            
                             if ((*P1).board[i-2][j] == playerNumber)
                             {
                                 if ((*P1).board[i-3][j] == playerNumber)
@@ -606,6 +610,12 @@ int main() {
             winner = checkWin(&P1, &P2, 2);
         }
     }
+    //end screen
+    LCD.Write("Game overe");
+    LCD.Write(winner);
+    LCD.Write(" wins!!");
+    Sleep(500);
+    LCD.WriteLine(" ");
     
     //if player 1 wins
     if (winner == 1)
@@ -620,6 +630,7 @@ int main() {
         if (P2.Play)
         {
             //add a win to player 2 wins stats
+            (P2).updateStats(1, 0, 0, 0);   
             (P2).updateStats(1, 0, 0, 0);
             loser = 1;   
         }
@@ -665,6 +676,22 @@ int main() {
 //AI drop piece with AI "functionality"
 int AI::AIDropPiece(player *P1)
 {
+    //LCD.Write(Difficulty);
+    /*
+    |   ->
+    8
+       6   7  8  9  10 11 12
+       1   2  3  4  5  6  7
+   6   {0, 0, 0, 0, 0, 0, 0}
+   7   {0, 0, 0, 1, 0, 0, 0}
+   8   {0, 0, 2, 1, 0, 0, 0}
+   9   {0, 0, 1, 2, 1, 0, 0}
+   10   {0, 0, 1, 2, 2, 0, 0}
+   11   {0, 1, 1, 2, 1, 2, 0}
+   ...
+    (2, 3), (3, 4), (4, 5), (5, 6)
+    */
+
     //if easiest difficulty selected, AI just places pieces in random column
     if (Difficulty == 1)
     {
