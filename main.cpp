@@ -603,12 +603,6 @@ int main() {
             winner = checkWin(&P1, &P2, 2);
         }
     }
-    //end screen
-    LCD.Write("Game overe");
-    LCD.Write(winner);
-    LCD.Write(" wins!!");
-    Sleep(500);
-    LCD.WriteLine(" ");
     
     //if player 1 wins
     if (winner == 1)
