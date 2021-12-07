@@ -247,7 +247,7 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
     {
         //LCD.WriteAt("Play game here", 10, 60);
         //player 1 select piece theme
-        (*p1).selectPieceTheme();
+        //(*p1).selectPieceTheme();
         //Ai set difficulty
         (*pc).setDifficulty();
 
@@ -263,8 +263,8 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
     while (menucheck == 2)
     {
         //LCD.WriteAt("Play game here", 95, 165);
-        (*p1).selectPieceTheme();
-        (*p2).selectPieceTheme();
+        //(*p1).selectPieceTheme();
+        //(*p2).selectPieceTheme();
         //player 1 and player 2 play
         (*p1).Play = true;
         (*p2).Play = true;
@@ -509,6 +509,31 @@ int checkWin(player *P1, player *P2, int playerNumber)
             }
         }
     }
+
+    //checks for tie, returns 3 if true
+    //made nested for loops to improve readability
+    if (((*P1).board[6][6] == 1 || (*P1).board[6][6] == 2))
+    {
+        if (((*P1).board[7][6] == 1 || (*P1).board[7][6] == 2))
+        {
+            if (((*P1).board[8][6] == 1 || (*P1).board[8][6] == 2))
+            {
+                if (((*P1).board[9][6] == 1 || (*P1).board[9][6] == 2))
+                {
+                    if (((*P1).board[10][6] == 1 || (*P1).board[10][6] == 2))
+                    {
+                        if (((*P1).board[11][6] == 1 || (*P1).board[11][6] == 2))
+                        {
+                            if (((*P1).board[12][6] == 1 || (*P1).board[12][6] == 2))
+                            {
+                                return 3;
+                            }
+                        }
+                    }
+                }
+            }    
+        }    
+    }
     //ends function, main loop continues because no winner found
     return 0;
 }
@@ -559,6 +584,9 @@ int main() {
 
     //0 when no winner is found, 1 when player 1 wins, 2 when AI or player 2 wins
     int winner = 0;
+
+    //for end screen
+    int loser = 0;
     
     //while no winner is found... play game
     while (winner == 0)
@@ -594,18 +622,13 @@ int main() {
             winner = checkWin(&P1, &P2, 2);
         }
     }
-    //end screen
-    FEHIMAGE end; //initialize pic variable
-    end.Open("end screenFEH.pic");
-    end.Draw(0,0);//draw pic
-    Sleep(5000);
-    LCD.WriteLine(" ");
     
     //if player 1 wins
     if (winner == 1)
     {
         //add a win to player 1 wins stats
         (P1).updateStats(1, 0, 0, 0);
+        loser = 2;
     }
     //if player 2 or AI wins
     else if (winner == 2)
@@ -613,18 +636,43 @@ int main() {
         if (P2.Play)
         {
             //add a win to player 2 wins stats
-            (P2).updateStats(1, 0, 0, 0);   
+            (P2).updateStats(1, 0, 0, 0);
+            loser = 1;   
         }
         else
         {
             //add a win to AI wins stats
             (opponent).updateStats(1, 0, 0, 0);
+            loser = 1;
         }
     }
+
+    //tie
+    else if (winner == 3)
+    {
+        winner = 1;
+        loser = 1;
+    }
+
     //write new data to stats file
     updateStatsFile(stats, &P1, &P2, &opponent);
     //close the stats file so changes can be saved
     stats.close();
+
+    //end screen
+    FEHIMAGE end; //initialize pic variable
+    end.Open("end screenFEH.pic");
+    end.Draw(0,0);//draw pic
+    LCD.SetFontColor(RED);
+    LCD.WriteAt("P", 40, 92.5);
+    LCD.WriteAt(loser, 50, 92.5);
+    LCD.WriteAt("P", 40, 112.5);
+    LCD.WriteAt(winner, 50, 112.5);
+    if (winner == 3)
+    {
+        LCD.WriteAt("TIE", 40, 130);
+    }
+    Sleep(5000);
 }
     //end main
     return 0;
