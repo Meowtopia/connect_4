@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "fstream"
+#include <fstream>
 
 using namespace std;
 
@@ -33,6 +33,8 @@ void drawMenu ()
     LCD.SetFontColor(LCD.White);
 */
 }
+
+
 //adds interactibility to menu
 /*returns 0 if no menu is selected, returns 1 if player 1 is selected
 2 if player 2 selected, 3 for records, 4 for instructions, 5 for credits 
@@ -152,7 +154,7 @@ class player
         //Drops piece
         void dropPiece(player*, int playerNumber);
         //updates stats
-        void updateStats();
+        void updateStats(int wins, int losses, int ties, int totalPiecesPlaced);
         //updates board, takes arguments column for the column that a peice is added to and player number, the player that dropped the piece.
         void updateBoard(int column, int playerNumber);
         //bool checkTopRow(int column);
@@ -160,15 +162,15 @@ class player
         bool Play;
         //20x20 board, actually 7x6. The added space is so that checkWin does not give a seg fault or whatever when checking for pieces outside of its dimensions
         int board [20][20];
+        int Wins;
+        int TotalPiecesPlaced;
     private:
         //name
         char Nm[25];
-        //stats
-        int Wins;
+        //stats   
         int Losses;
         int Ties;
         char Theme[25];
-        int TotalPiecesPlaced;
         //1 for player 1 and 2 for player 2
         int playerNumber;
 };
@@ -181,18 +183,18 @@ class AI
         //drop an AI piece, *tries* to utilize AI funcitonality
         int AIDropPiece(player*);
         //update stats
-        void updateStats();
+        void updateStats(int wins, int losses, int ties, int totalPiecesPlaced);
         //sets difficulty
         void setDifficulty();
+        int Wins;
+        int TotalPiecesPlaced;
     private:
         //stats
         //2 for AI
         int playerNumber;
-        int Wins;
         int Losses;
         int Ties;
         int Difficulty;
-        int TotalPiecesPlaced;
         //counts turn count, for AI.
         int turnCount;
 };
@@ -274,15 +276,34 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
     //records selected
     while (menucheck == 3)
     {
-        LCD.WriteAt("Single Player: ", 0, 30);
-        LCD.WriteAt("Player 1 Wins: 2", 10, 50);
-        LCD.WriteAt("Player 2 Wins: 40 ", 10, 70);
-        LCD.WriteAt("Multiplayer: ", 0, 100);
-        LCD.WriteAt("Player 1 Wins: 1", 10, 120);
-        LCD.WriteAt("Player 2 Wins: 4", 10, 140);
+        //writes records
+        LCD.WriteAt("Player 1 ", 0, 30);
+        LCD.WriteAt("Wins: ", 10, 50);
+        //player 1 wins
+        LCD.WriteAt((*p1).Wins, 75, 50);
+        LCD.WriteAt("Total Pieces Placed: ", 10, 70);
+        //player 1 total pieces places
+        LCD.WriteAt((*p1).TotalPiecesPlaced, 265, 70);
+        LCD.WriteAt("Player 2 ", 0, 100);
+        LCD.WriteAt("Wins: ", 10, 120);
+        //player 2 wins
+        LCD.WriteAt((*p2).Wins, 75, 120);
+        LCD.WriteAt("Total Pieces Placed: ", 10, 140);
+        //player 2 total pieces placed
+        LCD.WriteAt((*p2).TotalPiecesPlaced, 265, 140);
+        LCD.WriteAt("Computer ", 0, 170);
+        LCD.WriteAt("Wins: ", 10, 190);
+        //AI wins
+        LCD.WriteAt((*pc).Wins, 75, 190);
+        LCD.WriteAt("Total Pieces Placed: ", 10, 210);
+        //AI total pieces placed
+        LCD.WriteAt((*pc).TotalPiecesPlaced, 265, 210);
+        
+        //if back button selected
         if (backButton() == 1)
         {
             LCD.Clear();
+            //sets menu check to 0, goes back to main screen
             menucheck = 0;
             
         }
@@ -311,10 +332,44 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
             LCD.Clear();
             //go back to main screen
             menucheck = 0;
-            
         }
     }
     }
+}
+
+//resets the board before and after games, set all to 0
+//player 1 board is used as main board
+void resetBoard(player *P1)
+{
+    //nested for loop to set all elements inside board array to 0
+    for (int i = 6; i < 13; i++)
+    {
+        for (int j = 6; j < 12; j++)
+        {
+            (*P1).board [i][j] = 0;
+        }
+    }
+}
+
+//reads the stats file, sets corresponding stat variables of the objects to the stats file.
+void readStatsFile(fstream& stats, player *P1, player *P2, AI *Ai)
+{
+    while (true)
+    {
+        //reads and sets stat variables from stat file
+        stats >> (*P1).Wins >> (*P1).TotalPiecesPlaced >> (*P2).Wins >> (*P2).TotalPiecesPlaced >> (*Ai).Wins >> (*Ai).TotalPiecesPlaced;
+        //if EOF is reached, break while loop
+        if( stats.eof()) break;
+    }
+}
+
+//updates the stat file after a game with the new stats of each object after each game
+void updateStatsFile(fstream& stats, player *P1, player *P2, AI *Ai)
+{
+    //clears flag to write to file
+    stats.clear();
+    //writes new data to file, appends it
+    stats << (*P1).Wins << " " << (*P1).TotalPiecesPlaced << " " << (*P2).Wins << " " << (*P2).TotalPiecesPlaced << " " << (*Ai).Wins << " " << (*Ai).TotalPiecesPlaced << " ";
 }
 
 //checks for 4 in a row, winner
@@ -333,7 +388,7 @@ int checkWin(player *P1, player *P2, int playerNumber)
    ...
     (2, 3), (3, 4), (4, 5), (5, 6)
     */
-    //int winCheck = 1;
+    
     //loops through entire board, checks for four in a row based on player number input.
     //player number is 1 for player 1, 2 for AI or player 2
     for (int i = 6; i < 13; i++)
@@ -354,7 +409,6 @@ int checkWin(player *P1, player *P2, int playerNumber)
                                     //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
-                                    //Sleep(5000);
                                 } 
                             } 
                         } 
@@ -369,7 +423,6 @@ int checkWin(player *P1, player *P2, int playerNumber)
                                     //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
-                                    //Sleep(5000);
                                 } 
                             } 
                         } 
@@ -384,7 +437,6 @@ int checkWin(player *P1, player *P2, int playerNumber)
                                     //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
-                                    //Sleep(5000);
                                 } 
                             } 
                         } 
@@ -398,7 +450,6 @@ int checkWin(player *P1, player *P2, int playerNumber)
                                     //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
-                                    //Sleep(5000);
                                 } 
                             } 
                         } 
@@ -412,7 +463,6 @@ int checkWin(player *P1, player *P2, int playerNumber)
                                     //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
-                                    //Sleep(5000);
                                 } 
                             } 
                         } 
@@ -426,7 +476,6 @@ int checkWin(player *P1, player *P2, int playerNumber)
                                     //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
-                                   // Sleep(5000);
                                 } 
                             } 
                         } 
@@ -440,7 +489,6 @@ int checkWin(player *P1, player *P2, int playerNumber)
                                     //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
-                                    //Sleep(5000);
                                 } 
                             } 
                         } 
@@ -454,7 +502,6 @@ int checkWin(player *P1, player *P2, int playerNumber)
                                     //winner
                                     LCD.Write("WIN");
                                     return playerNumber;
-                                    //Sleep(5000);
                                 } 
                             } 
                         } 
@@ -466,20 +513,33 @@ int checkWin(player *P1, player *P2, int playerNumber)
 }
 //int main
 int main() {
-    // Infinite loop so the stoplights run until the program is closed
-    //infinite loop to run program
-    while(true)
-    {
-    //draw initial menu
-   drawMenu();
-
-    //check for menu
-    int menucheck = 0;
+    //C++ pointer to stats file
+   fstream stats;
 
     //instantiates objects for player 1, player 2, and AI opponent
     player P1("Player 1", 0, 0, 0, " ", 0, 1);
     player P2("Player 2", 0, 0, 0, " ", 0, 2);
     AI opponent;
+
+    //infinite loop to run program
+    while(true)
+    {
+    //opens stats file
+    stats.open ("stats.txt");
+
+    //resets board to all 0s, readies for play
+    resetBoard(&P1);
+   
+   //reads stats file, sets stat variables from objects to read data from stats file
+    readStatsFile(stats, &P1, &P2, &opponent);
+
+    Sleep(5);
+
+    //draw initial menu
+    drawMenu();
+
+    //check for menu
+    int menucheck = 0;
 
     //clear screen
     LCD.ClearBuffer();
@@ -507,6 +567,8 @@ int main() {
         {
             //player 1 drops piece
             (P1).dropPiece(&P1, 1);
+            //update stats total pieces dropped
+            (P1).updateStats(0, 0, 0, 1);
             //checks win based on player 1 pieces
             winner = checkWin(&P1, &P2, 1);
         }
@@ -515,13 +577,19 @@ int main() {
         {
             //player 2 drops piece
            (P2).dropPiece(&P1, 2); 
+           //update stats total pieces dropped
+            (P2).updateStats(0, 0, 0, 1);
            //checks win based on player 2 pieces
            winner = checkWin(&P1, &P2, 2);
         }
         //AI
         else if (winner == 0)
         {
+            //drop AI piece
             (opponent).AIDropPiece(&P1);
+            //adds a total piece drop to AI TotalPiecesDropped varible
+            (opponent).updateStats(0, 0, 0, 1);
+            //checks for AI win
             winner = checkWin(&P1, &P2, 2);
         }
     }
@@ -529,7 +597,33 @@ int main() {
     LCD.Write("Game overe");
     LCD.Write(winner);
     LCD.Write(" wins!!");
-    Sleep(5000000);
+    Sleep(500);
+    LCD.WriteLine(" ");
+    
+    //if player 1 wins
+    if (winner == 1)
+    {
+        //add a win to player 1 wins stats
+        (P1).updateStats(1, 0, 0, 0);
+    }
+    //if player 2 or AI wins
+    else if (winner == 2)
+    {
+        if (P2.Play)
+        {
+            //add a win to player 2 wins stats
+            (P2).updateStats(1, 0, 0, 0);   
+        }
+        else
+        {
+            //add a win to AI wins stats
+            (opponent).updateStats(1, 0, 0, 0);
+        }
+    }
+    //write new data to stats file
+    updateStatsFile(stats, &P1, &P2, &opponent);
+    //close the stats file so changes can be saved
+    stats.close();
 }
     //end main
     return 0;
@@ -689,18 +783,27 @@ int AI::AIDropPiece(player *P1)
     }
 }
 
-//player constructor
+//player constructor, takes arguments name wins losses ties theme totalpiecesplaced play and player number and sets them
 player::player (char nm[], int wins, int losses, int ties, char theme[], int totalPiecesPlaced, bool play, int PlayerNumbers)
 {
+    //sets name
     strcpy (Nm, nm);
+    //sets wins
     Wins = wins;
+    //sets losses
     Losses = losses;
+    //sets toes
     Ties = ties;
+    //sets theme
     strcpy(Theme, theme);
+    //sets totalpiecesplaced
     TotalPiecesPlaced = totalPiecesPlaced;
+    //sets bool play
     Play = play;
+    //sets playernumbers
     PlayerNumbers = PlayerNumbers;
     
+    //sets board elements to 0
     for (int i = 6; i < 13; i++)
     {
         for (int j = 6; j < 12; j++)
@@ -711,26 +814,38 @@ player::player (char nm[], int wins, int losses, int ties, char theme[], int tot
   
 }
 
+//AI opponenent constructor takes arguments name wins losses ties  totalpiecesplaced and turn and initializes the values 
 AI::AI (int difficulty, int wins, int losses, int ties, int totalPiecesPlaced, int turn)
 {
+    //sets difficulty, from 1 to 2
     Difficulty = difficulty;
+    //sets wins
     Wins = wins;
+    //sets losses
     Losses = losses;
+    //sets ties
     Ties = ties;
+    //sets totalPiecesPlaced
     TotalPiecesPlaced = totalPiecesPlaced;
+    //sets turn count, used for AI
     turnCount = turn;
 }
 
+//sets difficulty of AI based on player selection
 void AI::setDifficulty()
 {
+    //exit check for loop
     int exit = 0;
 
+    //checks for click from user to set difficulty
     while (exit == 0)
     {
     LCD.SetFontColor(LCD.Black);
+    //clears screen
     LCD.FillRectangle(0, 30, 250, 190);
 
     LCD.SetFontColor(LCD.White);
+    //writes elements
     LCD.WriteAt("Select Difficulty", 90, 110);
     LCD.WriteAt("Easiest", 110, 140);
     LCD.WriteAt("Easy", 110, 160);
@@ -745,33 +860,57 @@ void AI::setDifficulty()
     
     if (x_position > 105 && x_position < 205)
     {
+        //if easiest is selected
         if (y_position > 135 && y_position < 157)
         {
             Difficulty = 1;
             exit = 1;
         }
+        //if easier is selected. Normal is equivalent to easier
         else if (y_position > 158 && y_position < 177)
         {
             Difficulty = 2;
             exit = 1;
         }
+        //if normal is selected
         else if (y_position > 178 && y_position < 200)
         {
             Difficulty = 2;
             exit = 1;
         }
     }
-    //LCD.Write(Difficulty);
     }
 }
 
+//updates stat variables, wins losses ties and totalpiecesplaced.
+void player::updateStats(int wins, int losses, int ties, int totalPiecesPlaced)
+{
+    Wins += wins;
+    Losses += losses;
+    Ties += ties;
+    TotalPiecesPlaced += totalPiecesPlaced;
+}
 
+//updates stat variables, wins losses ties and totalpiecesplaced.
+void AI::updateStats(int wins, int losses, int ties, int totalPiecesPlaced)
+{
+    Wins += wins;
+    Losses += losses;
+    Ties += ties;
+    TotalPiecesPlaced += totalPiecesPlaced;
+}
+
+//select piece theme. not fully implemented, do not plan to implement this
 void player::selectPieceTheme()
 {
+    //exit loop check
     int exit = 0;
+
+    //checks for menu element selection and sets the theme corresponding to selection
     while (exit == 0)
     {
     LCD.Clear();
+    //writes selection
     LCD.WriteAt(Nm, 0, 110);
     LCD.WriteAt("Select Theme", 95, 110);
     LCD.WriteAt("Normal", 110, 140);
@@ -787,27 +926,32 @@ void player::selectPieceTheme()
     
     if (x_position > 105 && x_position < 205)
     {
+        //if normal option selected
         if (y_position > 135 && y_position < 157)
         {
             strcpy(Theme, "Normal");
             exit = 1;
         }
+        //pizza option selected
         else if (y_position > 158 && y_position < 177)
         {
             strcpy(Theme, "Pizza");
             exit = 1;
         }
+        //cookie option selected
         else if (y_position > 178 && y_position < 200)
         {
             strcpy(Theme, "Cookies");
             exit = 1;
         }
     }
-    //LCD.Write(Theme);
     }
 
 }
 
+//drops a piece for the player. takes object player 1 to set the board and player number
+//player number is used to set the board index to corresponding piece and update the theme
+//when dropping
 void player::dropPiece(player *P1, int playerNumber)
 {
     //hold position of touch
@@ -816,148 +960,208 @@ void player::dropPiece(player *P1, int playerNumber)
     float x_init;
     float y_init;
 
-    while(!LCD.Touch(&x_position,&y_position)) {
-        //LCD.SetFontColor(RED);
-        //LCD.FillCircle(x_position, y_position, 5);
-    };
+    while(!LCD.Touch(&x_position,&y_position)) {};
+    //while piece is held
     while(LCD.Touch(&x_trash,&y_trash)) {
-        
+        //if position of cursor when piece is held
         if (x_init != x_trash || y_init != y_trash)
         {
-            //LCD.Write("sus");
+            //erase old position
             LCD.SetFontColor(BLACK);
             LCD.FillCircle(x_init, y_init, 120);
         }
-        LCD.SetFontColor(RED);
+        //sets chip theme, red if player 1, yellow if player 2
+        if (playerNumber == 1)
+        {
+            LCD.SetFontColor(RED);
+        }
+        else if (playerNumber == 2)
+        {
+            LCD.SetFontColor(YELLOW);
+        }
 
+        //sets coordinates to new coordinates
         x_init = x_trash;
         y_init = y_trash;
 
+        //sets circle at new position
         LCD.FillCircle(x_trash, y_trash, 10);
-//LCD.Write("1");
-        drawBoard(false);
-        (*P1).updateBoard(0, 5);
-        Sleep(10);
-    };
 
+        //draws the board while piece held to prevent overlap
+        drawBoard(false);
+
+        //updates the pieces on the board so the player can see where
+        //they are dropping it
+        (*P1).updateBoard(0, 5);
+
+        //lowers framerate
+        Sleep(10);
+    }
+    
+    //sets position of when the piece is let go to _position variables to be analyzed
+    //in function updateBoard(...);
     x_position = x_init;
     y_position = y_init;
 
-        drawBoard(true);
+    drawBoard(true);
+    
+    //if piece is dropped within vincinity of board
+    if (x_position < 226)
+    {
+        //while the piece is above the board
+        while (y_init < 63)
+        {
+            LCD.SetFontColor(BLACK);
+            //blots out old circle
+            LCD.FillCircle(x_init, y_init, 10);
+
+            //sets color of piece based on player number
+            //red if 1, yellow if 2
+            if (playerNumber == 1)
+            {
+                LCD.SetFontColor(RED);
+            }
+            else if (playerNumber == 2) 
+            {
+                LCD.SetFontColor(YELLOW);
+            }
+
+            //fills the circle at a y value lower than before
+            //to animate falling effect
+            LCD.FillCircle(x_init, ++y_init, 10);
+
+            //draws board while falling
+            drawBoard(false);
+
+            //draws pieces in board while falling
+            (*P1).updateBoard(0, 5);
+            
+            //framerate check
+            Sleep (10);
+        }
+
+        //if piece is above column 1 of board and the top piece of
+        //column 1 is not filled
+        if (x_position < 44 && board [6][6] == 0)
+        {
+            (*P1).updateBoard(1, playerNumber);
+        }
+
+        //if piece is above column 2 of board and the top piece of
+        //column 2 is not filled
+        else if (x_position < 72 && board [7][6] == 0)
+        {
+            (*P1).updateBoard(2, playerNumber);
+        }
+
+        //if piece is above column 3 of board and the top piece of
+        //column 3 is not filled
+        else if (x_position < 100 && board [8][6] == 0)
+        {
+            (*P1).updateBoard(3, playerNumber);
+        }
+
+        //if piece is above column 4 of board and the top piece of
+        //column 4 is not filled
+        else if (x_position < 128 && board [9][6] == 0)
+        {
+            (*P1).updateBoard(4, playerNumber);
+        }
+
+        //if piece is above column 5 of board and the top piece of
+        //column 5 is not filled
+        else if (x_position < 156 && board [10][6] == 0)
+        {
+            (*P1).updateBoard(5, playerNumber);
+        }
+
+        //if piece is above column 6 of board and the top piece of
+        //column 6 is not filled
+        else if (x_position < 184 && board [11][6] == 0)
+        {
+            (*P1).updateBoard(6, playerNumber);
+        }
+
+        //if piece is above column 7 of board and the top piece of
+        //column 7 is not filled
+        else if (x_position < 212 && board [12][6] == 0)
+        {
+            (*P1).updateBoard(7, playerNumber);
+        }
+    }
+
+    //if the piece is not dropped within the dimensionsions of the board
+    else
+    { 
+        //drops the piece into nothingness. . . . . . .
+        while (y_init < 220)
+        {
+            //drawBoard(false);
+            LCD.SetFontColor(BLACK);
+            LCD.FillCircle(x_init, y_init, 10);
+
+            LCD.SetFontColor(RED);
+            LCD.FillCircle(x_init, ++y_init, 10);
         
-            if (x_position < 226)
-            {
-                while (y_init < 63)
-                {
-                 //drawBoard(false);
-                LCD.SetFontColor(BLACK);
-                LCD.FillCircle(x_init, y_init, 10);
-
-                LCD.SetFontColor(RED);
-                LCD.FillCircle(x_init, ++y_init, 10);
-            
-                drawBoard(false);
-                (*P1).updateBoard(0, 5);
-                Sleep (10);
-                }
-
-                if (x_position < 44)
-                {
-                    (*P1).updateBoard(1, playerNumber);
-                }
-
-                else if (x_position < 72)
-                {
-                    (*P1).updateBoard(2, playerNumber);
-                }
-
-                else if (x_position < 100)
-                {
-                    (*P1).updateBoard(3, playerNumber);
-                }
-
-                else if (x_position < 128)
-                {
-                    (*P1).updateBoard(4, playerNumber);
-                }
-
-                else if (x_position < 156)
-                {
-                    (*P1).updateBoard(5, playerNumber);
-                }
-
-                else if (x_position < 184)
-                {
-                    (*P1).updateBoard(6, playerNumber);
-                }
-
-                else if (x_position < 212)
-                {
-                    (*P1).updateBoard(7, playerNumber);
-                }
-            }
-            else
-            { 
-            while (y_init < 220)
-            {
-                //drawBoard(false);
-                LCD.SetFontColor(BLACK);
-                LCD.FillCircle(x_init, y_init, 10);
-
-                LCD.SetFontColor(RED);
-                LCD.FillCircle(x_init, ++y_init, 10);
-            
-                drawBoard(false);
-                (*P1).updateBoard(0, 5);
-                Sleep (10);
-            }
-            }
-    //LCD.Write("sus");
-
+            drawBoard(false);
+            (*P1).updateBoard(0, 5);
+            Sleep (10);
+        }
+    }
 }
 
+//updates the board to account for dropped piece
 void player::updateBoard(int column, int playerNumber)
 {
-    //nested for loop to draw the holes inside the board at equal increments
+    //nested for loop to draw the pieces based on whether it is occupied by player 1 or 2 or AI
+    //if occupied by player 1, draw a red circle there. If player 2 or AI, draw a yellow circle.
     for (int i = 6; i < 13; i++)
     {
         for (int j = 6; j < 12; j++)
         {
+            //if equal to playerNumber 1
             if (board [i][j] == 1)
             {
+                //draw a red cirlc there
                 LCD.SetFontColor(RED);
                 LCD.FillCircle(30 + (28*(i-6)), 63 + (29*(j-6)), 10);
             }
+            //if equal to playerNumber 2, player 2 or AI
             if (board [i][j] == 2)
             {
+                //draw a red cirlc there
                 LCD.SetFontColor(YELLOW);
                 LCD.FillCircle(30 + (28*(i-6)), 63 + (29*(j-6)), 10);
             }
         }
     }
     
+    //counter for while loop to draw falling animation in board
     int i = 0;
+    //draws falling animation in board
     while (i < 5 && board[column+5][i+7] == 0)
     {
-        //LCD.Write("susgdf");
+        //fills the previous circle
         LCD.SetFontColor(WHITE);
         LCD.FillCircle(30 + (28*(column-1)), 63 + (29*i), 10);
+
+        //sets piece color based on player number
+        //sets red on player number 1
         if (playerNumber == 1)
         {
             LCD.SetFontColor(RED);
         }
-
-        if (playerNumber == 2)
+        //sets yellow on player number 2
+        else if (playerNumber == 2)
         {
             LCD.SetFontColor(YELLOW);
         }
-        
+        //fills the new circle
         LCD.FillCircle(30 + (28*(column-1)), 63 + (29*(i+1)), 10);
         Sleep(100);
+        //increments i to continue falling effect
         ++i;
     }
-    
-        board[column+5][i+6] = playerNumber;
-    
+    //fills new piece position with player number, player number # occupies this space
+    board[column+5][i+6] = playerNumber;
 }
-
