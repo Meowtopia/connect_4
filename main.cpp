@@ -232,7 +232,7 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
     {
         //LCD.WriteAt("Play game here", 10, 60);
         //player 1 select piece theme
-        (*p1).selectPieceTheme();
+        //(*p1).selectPieceTheme();
         //(*p1).selectPieceTheme();
         //Ai set difficulty
         (*pc).setDifficulty();
@@ -249,8 +249,8 @@ void menuTransition(int menucheck, player *p1, player *p2, AI *pc)
     while (menucheck == 2)
     {
         //LCD.WriteAt("Play game here", 95, 165);
-        (*p1).selectPieceTheme();
-        (*p2).selectPieceTheme();
+        //(*p1).selectPieceTheme();
+        //(*p2).selectPieceTheme();
         //(*p1).selectPieceTheme();
         //(*p2).selectPieceTheme();
         //player 1 and player 2 play
