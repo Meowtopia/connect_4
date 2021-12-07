@@ -87,7 +87,8 @@ LCD.WriteAt("2.Place chip on board.", 0, 90);
 LCD.WriteAt("3.The game will continue", 0, 110);
 LCD.WriteAt("until there are four chips", 0, 130);
 LCD.WriteAt("in one path.", 0, 150);
-LCD.WriteAt("4.If the board is filled")
+LCD.WriteAt("4.If the board is filled",0,170);
+LCD.WriteAt("the game ends in a tie.",0,190);
 }//ending bracket
 
 //draw credits
