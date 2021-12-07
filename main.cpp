@@ -861,10 +861,9 @@ void AI::setDifficulty()
 
     LCD.SetFontColor(LCD.White);
     //writes elements
-    LCD.WriteAt("Select Difficulty", 90, 110);
-    LCD.WriteAt("Easiest", 110, 140);
-    LCD.WriteAt("Easy", 110, 160);
-    LCD.WriteAt("Normal", 110, 180);
+    LCD.WriteAt("Select Difficulty", 50, 10);
+    LCD.WriteAt("Easiest", 10, 70);
+    LCD.WriteAt("Easy", 10, 110);
     
     //hold position of touch
     float x_position, y_position;
@@ -873,26 +872,21 @@ void AI::setDifficulty()
     while(!LCD.Touch(&x_position,&y_position)) {};
     while(LCD.Touch(&x_trash,&y_trash)) {};
     
-    if (x_position > 105 && x_position < 205)
+    if (x_position > 0 && x_position < 100)
     {
         //if easiest is selected
-        if (y_position > 135 && y_position < 157)
+        if (y_position > 62 && y_position < 78)
         {
             Difficulty = 1;
             exit = 1;
         }
         //if easier is selected. Normal is equivalent to easier
-        else if (y_position > 158 && y_position < 177)
+        else if (y_position > 102 && y_position < 118)
         {
             Difficulty = 2;
             exit = 1;
         }
-        //if normal is selected
-        else if (y_position > 178 && y_position < 200)
-        {
-            Difficulty = 2;
-            exit = 1;
-        }
+       
     }
     }
 }
