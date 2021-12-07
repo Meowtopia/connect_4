@@ -45,7 +45,6 @@ int menuCheck()
         //player 2
         else if (y_position > 70 && y_position < 85)
         {
-            //LCD.WriteLine("player 2");
             return 2;
         }
     }//ending bracket
@@ -57,13 +56,11 @@ int menuCheck()
         //records
         if (y_position > 95 && y_position < 110)
         {
-            //LCD.WriteLine("recrds");
             return 3;
         }
         //instructions
         else if (y_position > 125 && y_position < 140)
         {
-            //LCD.WriteLine("instructions");
             return 4;
         }
         //credits
@@ -87,7 +84,8 @@ LCD.WriteAt("2.Place chip on board.", 0, 90);
 LCD.WriteAt("3.The game will continue", 0, 110);
 LCD.WriteAt("until there are four chips", 0, 130);
 LCD.WriteAt("in one path.", 0, 150);
-LCD.WriteAt("4.If the board is filled", 0, 170);
+LCD.WriteAt("4.If the board is filled",0, 170);
+LCD.WriteAt("the game ends in a tie.",0, 190);
 }//ending bracket
 
 //draw credits
@@ -362,20 +360,6 @@ void updateStatsFile(fstream& stats, player *P1, player *P2, AI *Ai)
 //checks for 4 in a row, winner
 int checkWin(player *P1, player *P2, int playerNumber)
 {
-    /*
-    |   ->
-    8
-       6   7  8  9  10 11 12
-   6   {0, 0, 0, 0, 0, 0, 0}
-   7   {0, 0, 0, 1, 0, 0, 0}
-   8   {0, 0, 2, 1, 0, 0, 0}
-   9   {0, 0, 1, 2, 1, 0, 0}
-   10   {0, 0, 1, 2, 2, 0, 0}
-   11   {0, 1, 1, 2, 1, 2, 0}
-   ...
-    (2, 3), (3, 4), (4, 5), (5, 6)
-    */
-    
     //loops through entire board, checks for four in a row based on player number input.
     //player number is 1 for player 1, 2 for AI or player 2
     for (int i = 6; i < 13; i++)
